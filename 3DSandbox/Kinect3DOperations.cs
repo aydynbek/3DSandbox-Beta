@@ -1085,7 +1085,10 @@ namespace _3DSandbox
         public Dictionary<int, Point3D> pointCloudIndexed = new Dictionary<int, Point3D>();
         public Dictionary<string, List<Vector3D>> cubeNormalVectorActual = new Dictionary<string, List<Vector3D>>();
 
-
+        void gitTest(Vertex v)
+        {
+            v.vertexId = 555;
+        }
        
 
         public void processPointCloudIntoCubesActualMesh()
