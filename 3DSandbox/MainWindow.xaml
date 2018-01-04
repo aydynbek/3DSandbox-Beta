@@ -1,0 +1,124 @@
+﻿<Window x:Class="_3DSandbox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_3DSandbox"
+        mc:Ignorable="d"
+        Title="MESA 3D Sandbox" Height="1040" Width="1920"
+		WindowState="Maximized"
+		Loaded="Window_Loaded"
+		KeyDown="Window_KeyDown"
+		>
+	<Window.Resources>
+		<SolidColorBrush x:Key="WholeBackGroundBrush" Color="#E4E0CC" />
+		<SolidColorBrush x:Key="WholeBackGroundBrush2" Color="#D5E0CC" />
+		<SolidColorBrush x:Key="3DViewBackGroundBrush" Color="#D9CEA4" />
+		<SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
+		<SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
+		<SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f" />
+	</Window.Resources>
+	<Grid>
+		<Grid Margin="10,10,589,10" KeyboardNavigation.TabNavigation="None" >
+			<TabControl Background="{StaticResource WholeBackGroundBrush}" PreviewKeyDown="TabControl_PreviewKeyDown">
+				<TabItem Header="Main 3D View">
+					<Grid>
+						<Border BorderBrush="Black" BorderThickness="3">
+							<Viewport3D Grid.Row="0" Grid.Column="0" Name="MainViewport" Margin="0,0,0,-3" MouseDown="MainViewport_MouseDown" />
+						</Border>
+					</Grid>
+				</TabItem>
+				<TabItem Header="Information">
+					<Grid>
+						<Border BorderBrush="Black" BorderThickness="3">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+								<TextBlock Name="InformationTextBlock"
+									Text="" TextWrapping="Wrap" TextAlignment="Justify" AllowDrop="False" FontSize="20"
+									FontFamily="Times New Roman" />
+							</ScrollViewer>
+
+						</Border>
+					</Grid>
+				</TabItem>
+				<TabItem Header="Depth View">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="28*"/>
+							<ColumnDefinition Width="40*"/>
+							<ColumnDefinition Width="1239*"/>
+						</Grid.ColumnDefinitions>
+						<Border BorderBrush="Black" BorderThickness="3" Grid.ColumnSpan="3">
+							<Image x:Name="depthViewImage" Height="800" Width="966" Margin="10,10,331,151"/>
+						</Border>
+						<Button Content="Get Depth Feed" HorizontalAlignment="Left" Height="41"
+								Margin="19,825,0,0" VerticalAlignment="Top" Width="183"
+								Click="GetDepthFeedButton_Click" Grid.ColumnSpan="3"/>
+						<Button Content="Remove Depth Feed" HorizontalAlignment="Left" Height="41"
+								Margin="19,871,0,0" VerticalAlignment="Top" Width="183"
+								Click="RemoveDepthFeedButton_Click" Grid.ColumnSpan="3"/>
+					</Grid>
+				</TabItem>
+				<TabItem Header="Color View">
+					<Grid>
+						<Border BorderBrush="Black" BorderThickness="3">
+							<Image x:Name="colorViewImage" Height="724
+							   " Width="1287" Margin="10,10,10,227"/>
+
+						</Border>
+						<Button Content="Get Color Feed" HorizontalAlignment="Left" Height="41"
+								Margin="15,749,0,0" VerticalAlignment="Top" Width="183"
+								Click="GetColorFeedButton_Click"/>
+						<Button Content="Remove Color Feed" HorizontalAlignment="Left" Height="41"
+								Margin="15,795,0,0" VerticalAlignment="Top" Width="183"
+								Click="RemoveColorFeedButton_Click"/>
+					</Grid>
+				</TabItem>
+			</TabControl>
+		</Grid>
+
+		<Grid Margin="1337,10,10,10" KeyboardNavigation.TabNavigation="None" >
+			<TabControl Background="{StaticResource WholeBackGroundBrush2}">
+				<TabItem Header="General">
+					<Grid>
+						<Button Content="Save Point Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="SavePointCloudButton_Click"/>
+						<Button Content="Process Point Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="ProcessPointCloudButton_Click" Margin="0,33,0,0"/>
+						<Button Content="Render Example Model" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="RenderExampleModelButton_Click" Margin="188,66,0,0"/>
+						<Button Content="Render Point Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="RenderPointCloudButton_Click" Margin="0,99,0,0"/>
+						<Button Content="Get Example Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="GetPointCloudFromExample_Click" Margin="0,132,0,0"/>
+						<Button Content="Render Example Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="RenderExampleTrianglesButton_Click" Margin="0,165,0,0"/>
+						<Button Content="Extract Mesh Data From Files" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="ExtractMeshDataFromFilesButton_Click" Margin="0,66,0,0"/>
+						<Button Content="Clear Information Text" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="ClearInformationTextButton_Click" Margin="375,33,0,0"/>
+						<TextBlock TextWrapping="Wrap" Text="Path of Data Folder:" Margin="4,206,445,738"/>
+						<TextBox Name="dataDirectoryPathTextBox" Height="23" TextWrapping="Wrap" Text="C:\Users\Badawest\Desktop\3D Sandbox\3DSandbox Data" Margin="115,198,5,740"/>
+						<Button Content="Create Actual Mesh" HorizontalAlignment="Left" VerticalAlignment="Top"
+							Width="183" Height="28" Click="CreateActualMeshButton_Click" Margin="188,0,0,0"/>
+						<Button Content="Extract Raw Depth From File" HorizontalAlignment="Left" VerticalAlignment="Top"
+		  Width="183" Height="28" Click="ExtractRawDepthFromFileButton_Click" Margin="375,165,0,0"/>
+					</Grid>
+				</TabItem>
+				<TabItem Header="Cube Details">
+					<Grid>
+						<Border BorderBrush="Black" BorderThickness="3">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+								<TextBox Name="CubeInformationTextBox" Background="Transparent" BorderThickness="0" 
+										 Text="{Binding Text, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" />
+							</ScrollViewer>
+
+						</Border>
+					</Grid>
+				</TabItem>
+
+
+			</TabControl>
+		</Grid>
+
+	</Grid>
+</Window>
