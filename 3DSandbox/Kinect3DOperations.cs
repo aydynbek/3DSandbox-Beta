@@ -1084,13 +1084,7 @@ namespace _3DSandbox
 
         public Dictionary<int, Point3D> pointCloudIndexed = new Dictionary<int, Point3D>();
         public Dictionary<string, List<Vector3D>> cubeNormalVectorActual = new Dictionary<string, List<Vector3D>>();
-
-        void gitTest(Vertex v)
-        {
-            v.vertexId = 555;
-        }
-       
-
+        
         public void processPointCloudIntoCubesActualMesh()
         {
             double X_divided0 = 0.0;
@@ -3645,7 +3639,7 @@ namespace _3DSandbox
             //string path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/teapotTriangles.txt";
             //string path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/hTsphereTriangles.txt";
             //string path = "D:/MESA Lab/MESA 3D/Extras/surface5Triangles.txt";
-            string path = "D:/MESA Lab/MESA 3D/Extras/terrain3Triangles.txt";
+            string path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain3Triangles.txt";
             string line;
 
             System.IO.StreamReader file =
@@ -3660,7 +3654,7 @@ namespace _3DSandbox
             //path = "D:/Solar Project/vertex_scope.txt";
             //path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/teapotVertices.txt";
             //path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/hTsphereVertices.txt";
-            path = "D:/MESA Lab/MESA 3D/Extras/terrain4Vertices.txt";
+            path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain4Vertices.txt";
             //path = "D:/MESA Lab/MESA 3D/Extras/simpleGroundVertices.txt";
             System.IO.StreamReader file2 =
             new System.IO.StreamReader(path);

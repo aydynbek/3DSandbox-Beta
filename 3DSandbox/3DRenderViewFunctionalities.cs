@@ -537,7 +537,6 @@ namespace _3DSandbox
 
             AddTriangle(mesh, F, E, G);
             AddTriangle(mesh, F, G, H);
-
         }
 
         // Define the lights.
