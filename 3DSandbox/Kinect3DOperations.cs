@@ -12,6 +12,9 @@ namespace _3DSandbox
 {
     class Kinect3DOperations
     {
+        int gitTest = 555;
+
+
         ConnectOfCube[,,] connectionToNeighboringCubes = new ConnectOfCube[3, 3, 3] {
         {{ConnectOfCube.EFG, ConnectOfCube.EF, ConnectOfCube.HEF},
             {ConnectOfCube.BF, ConnectOfCube.LEFT, ConnectOfCube.AE },
