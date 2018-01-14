@@ -934,9 +934,10 @@ namespace _3DSandbox
             // Add the model to the model groups.
             renderViewFunctionalities.MainModel3Dgroup.Children.Add(surface_model1);
         }
-
-       
-
+        
+        /// <summary>
+        /// This method renders the cube planes, marking them as accessible or not.
+        /// </summary>
         public void renderTrianglePlanes()
         {
             MeshGeometry3D mesh1 = new MeshGeometry3D();
@@ -2613,6 +2614,12 @@ namespace _3DSandbox
             }
         }
 
+
+        /// <summary>
+        /// This method is purely for graphical purposes. It will take the intersection verticees 
+        /// the cube's plane and its intersection and try to create triangles with all these 
+        /// verticees.
+        /// </summary>
         public void createTrianglesOfCubePlanes()
         {
             int indexOfTriangles = 0;
@@ -2627,6 +2634,10 @@ namespace _3DSandbox
             }
         }
 
+        /// <summary>
+        /// This method will look at each of the triangles in the cube and determine whether the 
+        /// area under that cube is accessible or not.
+        /// </summary>
         public void labelAccessibleCubes2()
         {
             Cube cubeToHandle;
@@ -3059,7 +3070,13 @@ namespace _3DSandbox
             return orderedVertices.ToArray();
         }
         
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="verticesOfPolygon"></param>
+        /// <param name="numberOfVertices"></param>
+        /// <param name="triangleIndex"></param>
+        /// <param name="cubeId"></param>
         public void convertPolygonIntoTriangles(Dictionary<int, Vertex> verticesOfPolygon, int numberOfVertices,
            ref int triangleIndex, string cubeId)
         {
