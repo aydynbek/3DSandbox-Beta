@@ -96,8 +96,8 @@ namespace _3DSandbox
         public TextBlock informationTextBlock;
         public TextBox cubeInformationTextBox;
         
-        public double cubeSize = .3;
-        //public double cubeSize = .45;
+        //public double cubeSize = .3;
+        public double cubeSize = 1.5;
 
         public double maximumAllowableVertexHeightDifference = 0.29;
         public double maximumAngleAllowed = 50;
@@ -1095,8 +1095,12 @@ namespace _3DSandbox
             }
         }
 
-
-        public void processPointCloudIntoCubesActualMesh()
+        /// <summary>
+        /// This function takes the point cloud mesh and uses the individual triangles to 
+        /// create the individual cube structures. The normals of the triangles are used
+        /// for mathematical analysis of the cubes.
+        /// </summary>
+        public void processPointCloudMeshIntoCubes()
         {
             double X_divided0 = 0.0;
             double Y_divided0 = 0.0;
@@ -1338,7 +1342,7 @@ namespace _3DSandbox
             }
         }
 
-        public void renderTrianglePlanesActualMesh()
+        public void renderPointCloudMesh()
         {
             MeshGeometry3D mesh1 = new MeshGeometry3D();
             DiffuseMaterial surface_material1 = new DiffuseMaterial(Brushes.DarkOrange);
@@ -1378,26 +1382,18 @@ namespace _3DSandbox
             double Z_gridLimitCeiling = 0.0;
             string[] gridLimitsStr = new string[6];
             string gridLimitsStrWholes = "";
-            int i = 0;
+
             Cube cubeToHandle;
             List<Point3D> singleCubeVertices;
 
             if(pointCloudVertices.Count == 0)
             {
+                // get the point cloud from the depth frame:
                 pointCloudVertices = depthMasterControl.savedPointCloudList;
-
             }
-            //informationTextBlock.Text += "kekekek " + depthMasterControl.savedPointCloudList.Count.ToString() + "\n";
 
             foreach (Point3D pointCloudVertex in pointCloudVertices)
             {
-                i++;
-
-                if (i < 100)
-                {
-                    // print some stuff for verification:
-                    informationTextBlock.Text += pointCloudVertex.ToString() + "\n";
-                }
 
                 X_divided = pointCloudVertex.X / cubeSize;
                 Y_divided = pointCloudVertex.Y / cubeSize;
@@ -1425,6 +1421,8 @@ namespace _3DSandbox
 
                 if (cubePointCloudVertices.ContainsKey(gridLimitsStrWholes))
                 {
+                    // We already have a cube for that key, just need to insert the 
+                    // current vertex into this existing cube:
                     singleCubeVertices = cubePointCloudVertices[gridLimitsStrWholes];
                     singleCubeVertices.Add(pointCloudVertex);
                 }
@@ -1451,7 +1449,7 @@ namespace _3DSandbox
         /// is based on the fact that the depth data comes in a 2D array which therefore allows us to
         /// connect verticees together as triangles as long as their distances are not far in between.
         /// </summary>
-        public void createActualMesh()
+        public void createPointCloudMesh()
         {
             Dictionary<int, int> currentColumnPoints, nextColumnPoints;
             int rowIndexCount = 0;
@@ -1537,7 +1535,6 @@ namespace _3DSandbox
 
                 rowIndexCount++;
             }
-            
         }
 
         public void getPointCloudOfDepthData()
@@ -2215,7 +2212,14 @@ namespace _3DSandbox
             
         }
 
-        public void calculatePlaneOfCubeActualNormalVectors(Cube cubeToHandle, ref int facedVerticesIndex,
+        /// <summary>
+        /// This function will take the available triangles inside the cube and determine the plane of best 
+        /// fit.
+        /// </summary>
+        /// <param name="cubeToHandle"></param>
+        /// <param name="facedVerticesIndex"></param>
+        /// <param name="pointCloudVerticesOfCube"></param>
+        public void calculatePlaneOfCube(Cube cubeToHandle, ref int facedVerticesIndex,
            List<Point3D> pointCloudVerticesOfCube)
         {
             Point3D[] trianglePoints = new Point3D[3];
@@ -2255,13 +2259,7 @@ namespace _3DSandbox
 
             cubeToHandle.planeEquationConstant = contstantOfPlaneEq;
             cubeToHandle.planeEquationNormalVector = normalVector;
-
-            if (facedVerticesIndex < 50)
-            {
-                informationTextBlock.Text += "shehshe " + normalVector.X.ToString("n6") + "," +
-                    normalVector.Y.ToString("n6") + "," + normalVector.Z.ToString("n6") + "\n";
-            }
-
+            
             // Sometimes the equation of the plane comes with 2 coefficients that are 0;
             // These are the planes that have their normal vectors point in the direction
             // of an axis. This case creates problems when we try to calculate cross sections.
@@ -2293,6 +2291,8 @@ namespace _3DSandbox
                 + point1.Z * normalVector.Z;
             }
 
+            // Now that we have the cube plane's equation, lets see which of the cubes edges this plane will 
+            // intersect:
             findCubeCrossSectionsAndUpdateDataStructures(cubeToHandle.cubeId, ref facedVerticesIndex, cubeLimits,
                     normalVector.X, normalVector.Y, normalVector.Z, contstantOfPlaneEq);
         }
@@ -2407,7 +2407,7 @@ namespace _3DSandbox
 
 
         /// <summary>
-        /// Create a mesh that is simplified from the vectex grid that we have populated
+        /// Create a mesh that is simplified from the vertex grid that we have populated
         /// before. Planes are created at each grid, which are estimated based on the different
         /// vertices present. These planes are then connected to create a mesh.
         /// </summary>
@@ -2444,7 +2444,7 @@ namespace _3DSandbox
 
                 trianglePoints = new Point3D[3];
 
-                calculatePlaneOfCubeActualNormalVectors(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+                calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
                 //calculatePlaneOfCubePointMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
                 //calculatePlaneOfCubeNormalsMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
             }

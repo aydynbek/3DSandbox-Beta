@@ -112,14 +112,23 @@
             kinect3DOperations.extractDepthDataFromFiles();
         }
 
+        private void ExtractPointCloudFromFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            kinect3DOperations.extractSavedPointCloud();
+        }
+
+        
+
+
         private void ExtractRawDepthFromFileButton2_Click(object sender, RoutedEventArgs e)
         {
             kinect3DOperations.getPointCloudOfDepthData();
         }
 
-        private void RenderExampleTrianglesButton_Click(object sender, RoutedEventArgs e)
+        private void ShowAccessabilityMapButton_Click(object sender, RoutedEventArgs e)
         {
             dataDirectoryPath = dataDirectoryPathTextBox.Text;
+
             kinect3DOperations.createSimplifiedMeshFromGridActual();
             //kinect3DOperations.createSimplifiedMeshFromGrid();
             kinect3DOperations.connectAdjacentPlanes2();
@@ -177,17 +186,17 @@
 
         private void CreatePointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
-            kinect3DOperations.createActualMesh();
+            kinect3DOperations.createPointCloudMesh();
         }
 
         private void RenderPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
-            kinect3DOperations.renderTrianglePlanesActualMesh();
+            kinect3DOperations.renderPointCloudMesh();
         }
 
         private void ProcessPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
-            kinect3DOperations.processPointCloudIntoCubesActualMesh();
+            kinect3DOperations.processPointCloudMeshIntoCubes();
         }
 
         private void MainViewport_MouseDown(object sender, MouseButtonEventArgs e)

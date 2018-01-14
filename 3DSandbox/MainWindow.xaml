@@ -80,42 +80,46 @@
 			<TabControl Background="{StaticResource WholeBackGroundBrush2}">
 				<TabItem Header="General">
 					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="99*"/>
+							<ColumnDefinition Width="460*"/>
+						</Grid.ColumnDefinitions>
 						<Button Content="Save Point Cloud To File" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="SavePointCloudButton_Click" Margin="188,0,0,0"/>
+								Width="183" Height="28" Click="SavePointCloudButton_Click" Margin="89,0,0,0" Grid.Column="1"/>
 						<Button Content="Process Point Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="ProcessPointCloudButton_Click" Margin="0,202,0,0"/>
+								Width="183" Height="28" Click="ProcessPointCloudButton_Click" Margin="0,202,0,0" Grid.ColumnSpan="2"/>
 						<Button Content="Render Mesh Data File" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="RenderExampleModelButton_Click" Margin="376,66,0,0"/>
+								Width="183" Height="28" Click="RenderExampleModelButton_Click" Margin="277,66,0,0" Grid.Column="1"/>
 						<Button Content="Render Point Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="RenderPointCloudButton_Click" Margin="188,66,0,0"/>
+								Width="183" Height="28" Click="RenderPointCloudButton_Click" Margin="89,66,0,0" Grid.Column="1"/>
 						<Button Content="Get Example Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="GetPointCloudFromExample_Click" Margin="0,235,0,0"/>
-						<Button Content="Render Example Cloud" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="RenderExampleTrianglesButton_Click" Margin="0,268,0,0"/>
+								Width="183" Height="28" Click="GetPointCloudFromExample_Click" Margin="0,235,0,0" Grid.ColumnSpan="2"/>
+						<Button Content="Show Accessability Map" Background="PaleVioletRed" HorizontalAlignment="Left" VerticalAlignment="Top"
+								Width="183" Height="28" Click="ShowAccessabilityMapButton_Click" Margin="89,198,0,0" Grid.Column="1"/>
 						<Button Content="Extract Mesh Data From Files" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="ExtractMeshDataFromFilesButton_Click" Margin="376,33,0,0"/>
+								Width="183" Height="28" Click="ExtractMeshDataFromFilesButton_Click" Margin="277,33,0,0" Grid.Column="1"/>
 						<Button Content="Clear Information Text" HorizontalAlignment="Left" VerticalAlignment="Top"
-								Width="183" Height="28" Click="ClearInformationTextButton_Click" Margin="376,165,0,0" RenderTransformOrigin="0.271,0.56"/>
-						<TextBlock TextWrapping="Wrap" Text="Path of Data Folder:" Margin="4,308,445,636"/>
-						<TextBox Name="dataDirectoryPathTextBox" Height="23" TextWrapping="Wrap" Text="C:\Users\Badawest\Desktop\3D Sandbox\3DSandbox Data" Margin="114,307,6,631"/>
+								Width="183" Height="28" Click="ClearInformationTextButton_Click" Margin="277,165,0,0" RenderTransformOrigin="0.271,0.56" Grid.Column="1"/>
+						<TextBlock TextWrapping="Wrap" Text="Path of Data Folder:" Margin="4,308,445,636" Grid.ColumnSpan="2"/>
+						<TextBox Name="dataDirectoryPathTextBox" Height="23" TextWrapping="Wrap" Text="C:\Users\Badawest\Desktop\3D Sandbox\3DSandbox Data" Margin="15,307,6,631" Grid.Column="1"/>
 						<Button Content="Create Point Cloud Mesh" HorizontalAlignment="Left" VerticalAlignment="Top"
-							Width="183" Height="28" Click="CreatePointCloudMeshButton_Click" Margin="188,99,0,0"/>
+							Width="183" Height="28" Click="CreatePointCloudMeshButton_Click" Margin="89,99,0,0" Grid.Column="1"/>
 						<Button Content="Extract Raw Depth From File" HorizontalAlignment="Left" VerticalAlignment="Top"
-		  Width="183" Height="28" Click="ExtractRawDepthFromFileButton_Click" Margin="0,33,0,0"/>
+		  Width="183" Height="28" Click="ExtractRawDepthFromFileButton_Click" Margin="0,33,0,0" Grid.ColumnSpan="2"/>
 						<Button Content="Save Raw Depth To File" HorizontalAlignment="Left" VerticalAlignment="Top"
-		  Width="183" Height="28" Click="SaveRawDepthToFileButton_Click"/>
+		  Width="183" Height="28" Click="SaveRawDepthToFileButton_Click" Grid.ColumnSpan="2"/>
 						<Button Content="Extract Point Cloud From File" HorizontalAlignment="Left" VerticalAlignment="Top"
-		  Width="183" Height="28" Click="ExtractRawDepthFromFileButton_Click" Margin="188,33,0,0"/>
-						<TextBlock TextWrapping="Wrap" Text="Name of Example 3D Model:" Margin="4,335,399,609"/>
-						<TextBox x:Name="dataDirectoryPathTextBox_Copy" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="165,334,6,604"/>
-						<TextBlock TextWrapping="Wrap" Text="Name of Raw Depth Data File:" Margin="4,363,392,581"/>
-						<TextBox x:Name="dataDirectoryPathTextBox_Copy1" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="172,362,6,576"/>
-						<TextBlock TextWrapping="Wrap" Text="Name of Point Cloud File:" Margin="4,392,399,552"/>
-						<TextBox x:Name="dataDirectoryPathTextBox_Copy2" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="148,391,6,547"/>
+		  Width="183" Height="28" Click="ExtractPointCloudFromFileButton_Click" Margin="89,33,0,0" Grid.Column="1"/>
+						<TextBlock TextWrapping="Wrap" Text="Name of Example 3D Model:" Margin="4,335,399,609" Grid.ColumnSpan="2"/>
+						<TextBox x:Name="dataDirectoryPathTextBox_Copy" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="66,334,6,604" Grid.Column="1"/>
+						<TextBlock TextWrapping="Wrap" Text="Name of Raw Depth Data File:" Margin="4,363,392,581" Grid.ColumnSpan="2"/>
+						<TextBox x:Name="dataDirectoryPathTextBox_Copy1" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="73,362,6,576" Grid.Column="1"/>
+						<TextBlock TextWrapping="Wrap" Text="Name of Point Cloud File:" Margin="4,392,399,552" Grid.ColumnSpan="2"/>
+						<TextBox x:Name="dataDirectoryPathTextBox_Copy2" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="49,391,6,547" Grid.Column="1"/>
 						<Button Content="Render Point Cloud Mesh" HorizontalAlignment="Left" VerticalAlignment="Top"
-		  Width="183" Height="28" Click="RenderPointCloudMeshButton_Click" Margin="188,132,0,0"/>
+		  Width="183" Height="28" Click="RenderPointCloudMeshButton_Click" Margin="89,132,0,0" Grid.Column="1"/>
 						<Button Content="Process Point Cloud Mesh" HorizontalAlignment="Left" VerticalAlignment="Top"
-		  Width="183" Height="28" Click="ProcessPointCloudMeshButton_Click" Margin="188,165,0,0"/>
+		  Width="183" Height="28" Click="ProcessPointCloudMeshButton_Click" Margin="89,165,0,0" Grid.Column="1"/>
 					</Grid>
 				</TabItem>
 				<TabItem Header="Cube Details">
