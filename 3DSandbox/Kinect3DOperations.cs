@@ -1537,9 +1537,7 @@ namespace _3DSandbox
 
                 rowIndexCount++;
             }
-
-            //renderTrianglePlanesActualMesh();
-            processPointCloudIntoCubesActualMesh();
+            
         }
 
         public void getPointCloudOfDepthData()

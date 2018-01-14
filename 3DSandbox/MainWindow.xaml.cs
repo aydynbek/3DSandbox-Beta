@@ -175,9 +175,19 @@
             //kinect3DOperations.savePointCloudInFile();
         }
 
-        private void CreateActualMeshButton_Click(object sender, RoutedEventArgs e)
+        private void CreatePointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
             kinect3DOperations.createActualMesh();
+        }
+
+        private void RenderPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
+        {
+            kinect3DOperations.renderTrianglePlanesActualMesh();
+        }
+
+        private void ProcessPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
+        {
+            kinect3DOperations.processPointCloudIntoCubesActualMesh();
         }
 
         private void MainViewport_MouseDown(object sender, MouseButtonEventArgs e)
