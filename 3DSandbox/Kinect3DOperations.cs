@@ -10,8 +10,14 @@ using System.Windows.Media.Media3D;
 
 namespace _3DSandbox
 {
+
+    
+
     class Kinect3DOperations
     {
+
+        int testGitgf = 1;
+
         ConnectOfCube[,,] connectionToNeighboringCubes = new ConnectOfCube[3, 3, 3] {
         {{ConnectOfCube.EFG, ConnectOfCube.EF, ConnectOfCube.HEF},
             {ConnectOfCube.BF, ConnectOfCube.LEFT, ConnectOfCube.AE },
