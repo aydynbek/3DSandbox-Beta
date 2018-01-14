@@ -102,7 +102,17 @@
             kinect3DOperations.processPointCloudIntoCubes();
         }
 
+        private void SaveRawDepthToFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            kinect3DOperations.saveRawDepthToFile();
+        }
+
         private void ExtractRawDepthFromFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            kinect3DOperations.extractDepthDataFromFiles();
+        }
+
+        private void ExtractRawDepthFromFileButton2_Click(object sender, RoutedEventArgs e)
         {
             kinect3DOperations.getPointCloudOfDepthData();
         }

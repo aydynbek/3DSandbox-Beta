@@ -1539,7 +1539,7 @@ namespace _3DSandbox
             List<Point3D> singleCubeVertices;
 
             // added 1/4/18
-            extractDepthDataFromFiles();
+            // extractDepthDataFromFiles();
 
             List<Point3D> pointCloudVertices = depthMasterControl.createPointCloud3(depthDataFromFile);
             
@@ -3714,7 +3714,13 @@ namespace _3DSandbox
             file.Close();
         }
 
-        public void savePointCloudInFile()
+
+        public void saveRawDepthToFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void savePointCloudToFile()
         {
             int limit = vertices.Count;
             int k = 0;

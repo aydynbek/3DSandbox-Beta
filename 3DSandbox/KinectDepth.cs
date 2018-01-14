@@ -261,8 +261,14 @@ namespace _3DSandbox
             double heightDouble = (double)heightCompressed;
             contourMappingZDistance = (maximumZRange / heightDouble) / 10;
         }
+
+
         public bool saveSinglePointCloud = false;
 
+        /// <summary>
+        /// This method will signal to the depth data management to save one single frame to a
+        /// specified file.
+        /// </summary>
         public void saveSinglePointCloudSignal()
         {
             saveSinglePointCloud = true;
@@ -286,10 +292,6 @@ namespace _3DSandbox
                     //savedPointCloudList = createPointCloud3();
                     indexedPoints = createPointCloudActualMesh();
                     saveSinglePointCloud = false;
-                }
-                else
-                {
-
                 }
 
                 // Compress; if compression was not desired, then we simply do a shallow copy of the
@@ -603,7 +605,7 @@ namespace _3DSandbox
         public Dictionary<int, Point3D> pointCloudIndexed = new Dictionary<int, Point3D>();
 
         /// <summary>
-        /// This method correctly generates a point cloud, that is, XYZ coordinates of every pixel
+        /// This method correctly generates a point cloud, that is, XYZ coordinates of every pixel.
         /// </summary>
         public Dictionary<int, Dictionary<int, int>> createPointCloudActualMesh()
         {

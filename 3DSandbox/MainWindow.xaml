@@ -103,7 +103,7 @@
 						<Button Content="Extract Raw Depth From File" HorizontalAlignment="Left" VerticalAlignment="Top"
 		  Width="183" Height="28" Click="ExtractRawDepthFromFileButton_Click" Margin="0,33,0,0"/>
 						<Button Content="Save Raw Depth To File" HorizontalAlignment="Left" VerticalAlignment="Top"
-		  Width="183" Height="28" Click="CreateActualMeshButton_Click"/>
+		  Width="183" Height="28" Click="SaveRawDepthToFileButton_Click"/>
 						<Button Content="Extract Point Cloud From File" HorizontalAlignment="Left" VerticalAlignment="Top"
 		  Width="183" Height="28" Click="ExtractRawDepthFromFileButton_Click" Margin="188,33,0,0"/>
 						<TextBlock TextWrapping="Wrap" Text="Name of Example 3D Model:" Margin="4,335,399,609"/>
