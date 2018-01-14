@@ -169,7 +169,21 @@ namespace _3DSandbox
         SpecularMaterial qSpecTransWhite =
                     new SpecularMaterial(new SolidColorBrush(Color.FromArgb(75, 255, 255, 0)), 30.0);
         MaterialGroup qOuterMaterial = new MaterialGroup();
-        
+
+        public double acceptableDistance = .75;
+        //public double acceptableDistance = 1.55;
+
+        public Dictionary<int, Dictionary<int, int>> indexedPoints =
+               new Dictionary<int, Dictionary<int, int>>();
+
+        public Dictionary<int, Point3D[]> actualMeshTriangleList = new Dictionary<int, Point3D[]>();
+        public Dictionary<int, Vector3D> actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
+        public Dictionary<int, int[]> actualMeshTriangleListIndexed = new Dictionary<int, int[]>();
+
+        public Dictionary<int, Point3D> pointCloudIndexed = new Dictionary<int, Point3D>();
+        public Dictionary<string, List<Vector3D>> cubeNormalVectorActual = new Dictionary<string, List<Vector3D>>();
+
+
 
         public void getRayCastedCube(RayMeshGeometry3DHitTestResult meshResult)
         {
@@ -887,6 +901,11 @@ namespace _3DSandbox
             */
         }
 
+
+        /// <summary>
+        /// This function renders a point cloud as small, black cloud of 3D cubes. WPF apparantly does not have support for 
+        /// rendering points.
+        /// </summary>
         public void renderPointCloud()
         {
             MeshGeometry3D mesh1 = new MeshGeometry3D();
@@ -997,6 +1016,10 @@ namespace _3DSandbox
             renderViewFunctionalities.MainModel3Dgroup.Children.Add(surface_model3);
         }
         
+
+        /// <summary>
+        /// This function takes the verticees of a 3D model and divides them into cubes.
+        /// </summary>
         public void getPointCloudOfExampleModel()
         {
             double X_divided = 0.0;
@@ -1072,19 +1095,7 @@ namespace _3DSandbox
             }
         }
 
-        public double acceptableDistance = .75;
-        //public double acceptableDistance = 1.55;
 
-        public Dictionary<int, Dictionary<int, int>> indexedPoints =
-               new Dictionary<int, Dictionary<int, int>>();
-
-        public Dictionary<int, Point3D[]> actualMeshTriangleList = new Dictionary<int, Point3D[]>();
-        public Dictionary<int, Vector3D> actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
-        public Dictionary<int, int[]> actualMeshTriangleListIndexed = new Dictionary<int, int[]>();
-
-        public Dictionary<int, Point3D> pointCloudIndexed = new Dictionary<int, Point3D>();
-        public Dictionary<string, List<Vector3D>> cubeNormalVectorActual = new Dictionary<string, List<Vector3D>>();
-        
         public void processPointCloudIntoCubesActualMesh()
         {
             double X_divided0 = 0.0;
@@ -1351,7 +1362,9 @@ namespace _3DSandbox
         }
 
 
-
+        /// <summary>
+        /// This function divides out the raw point clouds into 3D cubes of the same size.
+        /// </summary>
         public void processPointCloudIntoCubes()
         {
             double X_divided = 0.0;
@@ -1379,8 +1392,10 @@ namespace _3DSandbox
             foreach (Point3D pointCloudVertex in pointCloudVertices)
             {
                 i++;
+
                 if (i < 100)
                 {
+                    // print some stuff for verification:
                     informationTextBlock.Text += pointCloudVertex.ToString() + "\n";
                 }
 
@@ -1430,6 +1445,12 @@ namespace _3DSandbox
             }
         }
 
+
+        /// <summary>
+        /// This function renders the point cloud as a connected 3D mesh. The triangulation process
+        /// is based on the fact that the depth data comes in a 2D array which therefore allows us to
+        /// connect verticees together as triangles as long as their distances are not far in between.
+        /// </summary>
         public void createActualMesh()
         {
             Dictionary<int, int> currentColumnPoints, nextColumnPoints;
