@@ -35,7 +35,6 @@ namespace _3DSandbox
             this.vertexPosition = new Point3D(otherVertex.vertexPosition.X,
                 otherVertex.vertexPosition.Y, otherVertex.vertexPosition.Z);
         }
-
         
         public override string ToString()
         {

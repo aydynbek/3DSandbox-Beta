@@ -115,17 +115,18 @@
 
         private void ExtractRawDepthFromFileButton_Click(object sender, RoutedEventArgs e)
         {
+            rawDepthDataFileName = rawDepthDataFileTextBox.Text;
+
             kinect3DOperations.extractDepthDataFromFiles();
         }
 
         private void ExtractPointCloudFromFileButton_Click(object sender, RoutedEventArgs e)
         {
+            pointCloudFileName = pointCloudFileTextBox.Text;
+
             kinect3DOperations.extractSavedPointCloud();
         }
-
         
-
-
         private void ExtractRawDepthFromFileButton2_Click(object sender, RoutedEventArgs e)
         {
             kinect3DOperations.getPointCloudOfDepthData();
@@ -188,7 +189,7 @@
             dataDirectoryPath = dataDirectoryPathTextBox.Text;
             informationTextBlock.Text = "";
             //kinect3DOperations.extractSavedPointCloud();
-
+            kinect3DOperations.runPlaneTest();
             //kinect3DOperations.runConvertPolygonIntoTrianglesTest();
             //kinect3DOperations.savePointCloudInFile();
         }

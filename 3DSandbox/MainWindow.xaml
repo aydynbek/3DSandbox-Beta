@@ -111,7 +111,7 @@
 						<Button Content="Extract Point Cloud From File" HorizontalAlignment="Left" VerticalAlignment="Top"
 		  Width="183" Height="28" Click="ExtractPointCloudFromFileButton_Click" Margin="89,33,0,0" Grid.Column="1"/>
 						<TextBlock TextWrapping="Wrap" Text="Name of Example 3D Model (verticees):" Margin="4,335,344,609" Grid.ColumnSpan="2"/>
-						<TextBox x:Name="example3DModelVerticeesTextBox" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="121,334,6,604" Grid.Column="1"/>
+						<TextBox x:Name="example3DModelVerticeesTextBox" Height="23" TextWrapping="Wrap" Text="terrain6Vertices.txt" Margin="121,334,6,604" Grid.Column="1"/>
 						<TextBlock TextWrapping="Wrap" Text="Name of Raw Depth Data File:" Margin="4,410,392,534" Grid.ColumnSpan="2"/>
 						<TextBox x:Name="rawDepthDataFileTextBox" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="73,409,6,529" Grid.Column="1"/>
 						<TextBlock TextWrapping="Wrap" Text="Name of Point Cloud File:" Margin="4,439,399,505" Grid.ColumnSpan="2"/>
@@ -121,7 +121,7 @@
 						<Button Content="Process Point Cloud Mesh" HorizontalAlignment="Left" VerticalAlignment="Top"
 		  Width="183" Height="28" Click="ProcessPointCloudMeshButton_Click" Margin="89,165,0,0" Grid.Column="1"/>
 						<TextBlock TextWrapping="Wrap" Text="Name of Example 3D Model (triangles):" Margin="4,362,310,582" Grid.ColumnSpan="2"/>
-						<TextBox x:Name="example3DModelTrianglesTextBox" Height="23" TextWrapping="Wrap" Text="sphere.txt" Margin="118,361,6,577" Grid.Column="1"/>
+						<TextBox x:Name="example3DModelTrianglesTextBox" Height="23" TextWrapping="Wrap" Text="terrain6Triangles.txt" Margin="118,361,6,577" Grid.Column="1"/>
 					</Grid>
 				</TabItem>
 				<TabItem Header="Cube Details">

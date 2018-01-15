@@ -3671,37 +3671,32 @@ namespace _3DSandbox
         /// <param name="vertices"></param>
         public void extractMeshDataFromFiles()
         {
-            //string path = "D:/Solar Project/triangle_scope.txt";
-            //string path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/teapotTriangles.txt";
-            //string path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/hTsphereTriangles.txt";
-            //string path = "D:/MESA Lab/MESA 3D/Extras/surface5Triangles.txt";
-            //string path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain3Triangles.txt";
-
+            triangles = new List<string>();
+            vertices = new List<string>();
+            
             string path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
             path += "/Data Files/";
+
+            // Get triangle information from file:
             path += MainWindow.example3DModelTrianglesName;
             string line;
 
-            System.IO.StreamReader file =
-            new System.IO.StreamReader(path);
+            StreamReader file =
+            new StreamReader(path);
             while ((line = file.ReadLine()) != null)
             {
                 triangles.Add(line);
             }
 
             file.Close();
-
-            //path = "D:/Solar Project/vertex_scope.txt";
-            //path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/teapotVertices.txt";
-            //path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/hTsphereVertices.txt";
-            //path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain4Vertices.txt";
-            //path = "D:/MESA Lab/MESA 3D/Extras/simpleGroundVertices.txt";
+            
+            // Get verticees information from file:
             path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
             path += "/Data Files/";
             path += MainWindow.example3DModelVerticeesName;
-            
-            System.IO.StreamReader file2 =
-            new System.IO.StreamReader(path);
+
+            StreamReader file2 =
+            new StreamReader(path);
             while ((line = file2.ReadLine()) != null)
             {
                 vertices.Add(line);
@@ -3717,14 +3712,15 @@ namespace _3DSandbox
         /// <param name="vertices"></param>
         public void extractDepthDataFromFiles()
         {
-            //string path = "D:/MESA Lab/MESA 3D/Kinect Scans/scanWithChair.txt";
-            string path = MainWindow.dataDirectoryPath;
-            path = "C:/Users/Badawest/Desktop/3D Sandbox/3DSandbox Data/scanWithChair.txt";
+            string path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+            path += "/Data Files/";
+            path += MainWindow.rawDepthDataFileName;
+
             string line;
             int i = 0, limit = 512 * 424;
 
-            System.IO.StreamReader file =
-            new System.IO.StreamReader(path);
+            StreamReader file =
+            new StreamReader(path);
             while ((line = file.ReadLine()) != null && i != limit)
             {
                 depthDataFromFile[i++] = Double.Parse(line);
@@ -3740,14 +3736,15 @@ namespace _3DSandbox
         /// <param name="vertices"></param>
         public void extractSavedPointCloud()
         {
-            string path = MainWindow.dataDirectoryPath;
-            path += "/pointCloudSingleSave - Copy.txt";
+            string path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+            path += "/Data Files/";
+            path += MainWindow.pointCloudFileName;
 
             string line;
             string[] splitParts;
 
-            System.IO.StreamReader file =
-            new System.IO.StreamReader(path);
+            StreamReader file =
+            new StreamReader(path);
             while ((line = file.ReadLine()) != null)
             {
                 splitParts = line.Split(',');
@@ -3774,7 +3771,8 @@ namespace _3DSandbox
             double Z = 0.0;
             string[] gridLimitsStr = new string[6];
 
-            string path = MainWindow.dataDirectoryPath;
+            string path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+            path += "/Data Files/";
             path += "/pointCloudSingleSave.txt";
 
             using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Write, FileShare.None))
@@ -3788,6 +3786,154 @@ namespace _3DSandbox
             }
         }
 
+        public void runPlaneTest()
+        {
+            char splitter = ' ';
 
+            string vertecesLine = "";
+            string[] vertexLineSeperated = new string[3];
+
+            Point3D vertexPointTmp = new Point3D();
+
+            int vertexIndex = 0;
+
+            List<Vertex> verticeesList = new List<Vertex>();
+
+            // Get the verticees:
+            foreach (string vertexLine in vertices)
+            {
+                vertexLineSeperated = vertexLine.Split(splitter);
+                vertexPointTmp = new Point3D(Double.Parse(vertexLineSeperated[0]), Double.Parse(vertexLineSeperated[1]),
+                    Double.Parse(vertexLineSeperated[2]));
+                verticeesList.Add(new Vertex(vertexIndex++, vertexPointTmp));
+            }
+
+            // Create the initial triangle:
+            Vertex A = verticeesList[0];
+            Vertex B = verticeesList[1];
+            Vertex C = verticeesList[2];
+
+            verticeesList.Remove(A);
+            verticeesList.Remove(B);
+            verticeesList.Remove(C);
+
+            double dAx = 0;
+            double dAy = 0;
+            double dAz = 0;
+
+            double dBx = 0;
+            double dBy = 0;
+            double dBz = 0;
+
+            double dCx = 0;
+            double dCy = 0;
+            double dCz = 0;
+
+            double distA = 0;
+            double distB = 0;
+            double distC = 0;
+
+            int closestPoint = 0;
+
+            int accumulatorA = 0;
+            int accumulatorB = 0;
+            int accumulatorC = 0;
+
+            foreach (Vertex vert in verticeesList)
+            {
+                // Calculate distances between triangle points:
+                dAx = vert.vertexPosition.X - A.vertexPosition.X;
+                dAy = vert.vertexPosition.Y - A.vertexPosition.Y;
+                dAz = vert.vertexPosition.Z - A.vertexPosition.Z;
+
+                dBx = vert.vertexPosition.X - B.vertexPosition.X;
+                dBy = vert.vertexPosition.Y - B.vertexPosition.Y;
+                dBz = vert.vertexPosition.Z - B.vertexPosition.Z;
+
+                dCx = vert.vertexPosition.X - C.vertexPosition.X;
+                dCy = vert.vertexPosition.Y - C.vertexPosition.Y;
+                dCz = vert.vertexPosition.Z - C.vertexPosition.Z;
+
+                distA = dAx * dAx + dAy * dAy + dAz * dAz;
+                distB = dBx * dBx + dBy * dBy + dBz * dBz;
+                distC = dCx * dCx + dCy * dCy + dCz * dCz;
+
+                // Find the closest triangle point:
+                if (distA < distB && distA < distC)
+                {
+                    closestPoint = 1;
+                    accumulatorA++;
+
+                    dAx /= 2;
+                    dAy /= 2;
+                    dAz /= 2;
+
+                    dAx /= accumulatorA;
+                    dAy /= accumulatorA;
+                    dAz /= accumulatorA;
+
+                    A.vertexPosition.X += dAx;
+                    A.vertexPosition.Y += dAy;
+                    A.vertexPosition.Z += dAz;
+                } else
+                {
+                    if(distB < distC)
+                    {
+                        closestPoint = 2;
+                        accumulatorB++;
+
+                        dBx /= 2;
+                        dBy /= 2;
+                        dBz /= 2;
+
+                        dBx /= accumulatorB;
+                        dBy /= accumulatorB;
+                        dBz /= accumulatorB;
+
+                        B.vertexPosition.X += dBx;
+                        B.vertexPosition.Y += dBy;
+                        B.vertexPosition.Z += dBz;
+                    } else
+                    {
+                        closestPoint = 3;
+                        accumulatorC++;
+
+                        dCx /= 2;
+                        dCy /= 2;
+                        dCz /= 2;
+
+                        dCx /= accumulatorC;
+                        dCy /= accumulatorC;
+                        dCz /= accumulatorC;
+
+                        C.vertexPosition.X += dCx;
+                        C.vertexPosition.Y += dCy;
+                        C.vertexPosition.Z += dCz;
+                    }
+                }
+            }
+
+            Vector3D normalVector = Vector3D.CrossProduct(
+                new Vector3D(A.vertexPosition.X - B.vertexPosition.X,
+                             A.vertexPosition.Y - B.vertexPosition.Y,
+                             A.vertexPosition.Z - B.vertexPosition.Z),
+                new Vector3D(A.vertexPosition.X - C.vertexPosition.X,
+                             A.vertexPosition.Y - C.vertexPosition.Y,
+                             A.vertexPosition.Z - C.vertexPosition.Z));
+
+            informationTextBlock.Text = normalVector.ToString();
+
+            vertices = new List<string>();
+            triangles = new List<string>();
+
+            vertices.Add(A.vertexPosition.X.ToString() + " " + A.vertexPosition.Y.ToString() + " " + A.vertexPosition.Z.ToString());
+            vertices.Add(B.vertexPosition.X.ToString() + " " + B.vertexPosition.Y.ToString() + " " + B.vertexPosition.Z.ToString());
+            vertices.Add(C.vertexPosition.X.ToString() + " " + C.vertexPosition.Y.ToString() + " " + C.vertexPosition.Z.ToString());
+
+            triangles.Add("1/1/1 2/2/1 3/3/2");
+
+
+        }
+        
     }
 }
