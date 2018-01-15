@@ -3675,7 +3675,11 @@ namespace _3DSandbox
             //string path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/teapotTriangles.txt";
             //string path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/hTsphereTriangles.txt";
             //string path = "D:/MESA Lab/MESA 3D/Extras/surface5Triangles.txt";
-            string path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain3Triangles.txt";
+            //string path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain3Triangles.txt";
+
+            string path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+            path += "/Data Files/";
+            path += MainWindow.example3DModelTrianglesName;
             string line;
 
             System.IO.StreamReader file =
@@ -3690,8 +3694,12 @@ namespace _3DSandbox
             //path = "D:/Solar Project/vertex_scope.txt";
             //path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/teapotVertices.txt";
             //path = "D:/Solar Project/XBOX ONE/MESA 3D/Extras/hTsphereVertices.txt";
-            path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain4Vertices.txt";
+            //path = "C:/Users/Badawest/Desktop/3D Sandbox/Extras/terrain4Vertices.txt";
             //path = "D:/MESA Lab/MESA 3D/Extras/simpleGroundVertices.txt";
+            path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+            path += "/Data Files/";
+            path += MainWindow.example3DModelVerticeesName;
+            
             System.IO.StreamReader file2 =
             new System.IO.StreamReader(path);
             while ((line = file2.ReadLine()) != null)

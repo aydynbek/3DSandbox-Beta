@@ -37,6 +37,12 @@
 
         public static string dataDirectoryPath = "";
 
+        public static string example3DModelVerticeesName = "";
+        public static string example3DModelTrianglesName = "";
+
+        public static string rawDepthDataFileName = "";
+        public static string pointCloudFileName = "";
+
         public MainWindow()
         {
             this.DataContext = this;
@@ -144,6 +150,9 @@
 
         private void ExtractMeshDataFromFilesButton_Click(object sender, RoutedEventArgs e)
         {
+            example3DModelTrianglesName = example3DModelTrianglesTextBox.Text;
+            example3DModelVerticeesName = example3DModelVerticeesTextBox.Text;
+
             kinect3DOperations.extractMeshDataFromFiles();
         }
 
