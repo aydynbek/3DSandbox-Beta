@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -97,7 +98,7 @@ namespace _3DSandbox
         public TextBox cubeInformationTextBox;
         
         //public double cubeSize = .3;
-        public double cubeSize = 1.5;
+        public double cubeSize = .64;
 
         public double maximumAllowableVertexHeightDifference = 0.29;
         public double maximumAngleAllowed = 50;
@@ -957,7 +958,7 @@ namespace _3DSandbox
             Cube cubeToHandle;
             Triangle triangleToHandle;
 
-            informationTextBlock.Text = allCubes.Count.ToString() + "\n";
+            informationTextBlock.Text = "Cube Count: " + allCubes.Count.ToString() + "\n";
 
             foreach (string cubeId in allCubes.Keys)
             {
@@ -3789,6 +3790,9 @@ namespace _3DSandbox
         public void runPlaneTest()
         {
             char splitter = ' ';
+            Stopwatch sWatch = new Stopwatch();
+            sWatch.Reset();
+            sWatch.Start();
 
             string vertecesLine = "";
             string[] vertexLineSeperated = new string[3];
@@ -3931,8 +3935,9 @@ namespace _3DSandbox
             vertices.Add(C.vertexPosition.X.ToString() + " " + C.vertexPosition.Y.ToString() + " " + C.vertexPosition.Z.ToString());
 
             triangles.Add("1/1/1 2/2/1 3/3/2");
-
-
+            
+            informationTextBlock.Text = "Count: " + verticeesList.Count.ToString() + "\n";
+            informationTextBlock.Text += "Time: " + sWatch.ElapsedMilliseconds.ToString() + "\n";
         }
         
     }
