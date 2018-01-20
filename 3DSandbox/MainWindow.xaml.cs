@@ -43,6 +43,8 @@
         public static string rawDepthDataFileName = "";
         public static string pointCloudFileName = "";
 
+        public static string cubeStructureSize = "";
+
         public MainWindow()
         {
             this.DataContext = this;
@@ -123,6 +125,7 @@
         private void ExtractPointCloudFromFileButton_Click(object sender, RoutedEventArgs e)
         {
             pointCloudFileName = pointCloudFileTextBox.Text;
+            cubeStructureSize = cubeStructureSizeTextBox.Text;
 
             kinect3DOperations.extractSavedPointCloud();
         }
@@ -135,7 +138,8 @@
         private void ShowAccessabilityMapButton_Click(object sender, RoutedEventArgs e)
         {
             dataDirectoryPath = dataDirectoryPathTextBox.Text;
-
+            cubeStructureSize = cubeStructureSizeTextBox.Text;
+            
             kinect3DOperations.createSimplifiedMeshFromGridActual();
             //kinect3DOperations.createSimplifiedMeshFromGrid();
             kinect3DOperations.connectAdjacentPlanes2();
@@ -177,6 +181,7 @@
         private void SavePointCloudButton_Click(object sender, RoutedEventArgs e)
         {
             dataDirectoryPath = dataDirectoryPathTextBox.Text;
+            cubeStructureSize = cubeStructureSizeTextBox.Text;
 
             //kinect3DOperations.extractDepthDataFromFiles();
             //kinect3DOperations.getPointCloudOfDepthData();

@@ -122,6 +122,8 @@
 		  Width="183" Height="28" Click="ProcessPointCloudMeshButton_Click" Margin="89,165,0,0" Grid.Column="1"/>
 						<TextBlock TextWrapping="Wrap" Text="Name of Example 3D Model (triangles):" Margin="4,362,310,582" Grid.ColumnSpan="2"/>
 						<TextBox x:Name="example3DModelTrianglesTextBox" Height="23" TextWrapping="Wrap" Text="terrain6Triangles.txt" Margin="118,361,6,577" Grid.Column="1"/>
+						<TextBlock TextWrapping="Wrap" Text="Size of Cube Structure: " Margin="4,467,432,477" Grid.ColumnSpan="2"/>
+						<TextBox x:Name="cubeStructureSizeTextBox" Height="23" TextWrapping="Wrap" Text="0.3" Margin="33,466,344,472" Grid.Column="1"/>
 					</Grid>
 				</TabItem>
 				<TabItem Header="Cube Details">

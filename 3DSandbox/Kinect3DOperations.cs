@@ -985,11 +985,14 @@ namespace _3DSandbox
                     }
                 } else
                 {
+                    // Render a transparent cube if a cube data structure does not exist at this position:
+                    /*
                     renderViewFunctionalities.renderSingleTransparentCube(mesh4,
                                   new Point3D(cubeToHandle.xFloor * cubeSize + ((cubeToHandle.xCeiling * cubeSize - cubeToHandle.xFloor * cubeSize) / 2),
                                               cubeToHandle.yFloor * cubeSize + ((cubeToHandle.yCeiling * cubeSize - cubeToHandle.yFloor * cubeSize) / 2),
                                               cubeToHandle.zFloor * cubeSize + ((cubeToHandle.zCeiling * cubeSize - cubeToHandle.zFloor * cubeSize) / 2)),
                                  cubeSize);
+                    */
                 }
             }
 
@@ -2429,6 +2432,9 @@ namespace _3DSandbox
             Cube neighborCubeToHandle;
             string neighborCubeId;
 
+            // Set the cube size according to the info on the textBox:
+            cubeSize = Double.Parse(MainWindow.cubeStructureSize);
+            
             foreach (string cubeId in allCubeIds)
             {
                 cubeToHandle = allCubes[cubeId];
@@ -2446,8 +2452,8 @@ namespace _3DSandbox
 
                 trianglePoints = new Point3D[3];
 
-                calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
-                //calculatePlaneOfCubePointMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+                //calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+                calculatePlaneOfCubePointMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
                 //calculatePlaneOfCubeNormalsMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
             }
             
@@ -3737,6 +3743,8 @@ namespace _3DSandbox
         /// <param name="vertices"></param>
         public void extractSavedPointCloud()
         {
+            cubeSize = Double.Parse(MainWindow.cubeStructureSize);
+
             string path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
             path += "/Data Files/";
             path += MainWindow.pointCloudFileName;
@@ -3749,8 +3757,12 @@ namespace _3DSandbox
             while ((line = file.ReadLine()) != null)
             {
                 splitParts = line.Split(',');
-                pointCloudVertices.Add(new Point3D(Double.Parse(splitParts[0]),
-                    Double.Parse(splitParts[1]), Double.Parse(splitParts[2])));
+                pointCloudVertices.Add(new Point3D(-1 * Double.Parse(splitParts[0]),
+                    -1 * Double.Parse(splitParts[1]), -1 * Double.Parse(splitParts[2])));
+                /*
+                pointCloudVertices.Add(new Point3D(-1 * Double.Parse(splitParts[0]),
+                    -1 * Double.Parse(splitParts[1]), -1 * Double.Parse(splitParts[2])));
+                */
             }
 
             file.Close();
