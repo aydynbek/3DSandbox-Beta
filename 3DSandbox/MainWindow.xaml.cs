@@ -32,7 +32,7 @@
         RenderViewFunctionalities renderViewFunctionalities;
 
         Viewport3D mainViewport = new Viewport3D();
-        TextBlock informationTextBlock = new TextBlock();
+        TextBox informationTextBlock = new TextBox();
         TextBox cubeInformationTextBox = new TextBox();
 
         public static string dataDirectoryPath = "";
@@ -143,6 +143,7 @@
             kinect3DOperations.createSimplifiedMeshFromGridActual();
             //kinect3DOperations.createSimplifiedMeshFromGrid();
             kinect3DOperations.connectAdjacentPlanes2();
+
             kinect3DOperations.createTrianglesOfCubePlanes();
             kinect3DOperations.labelAccessibleCubes2();
             kinect3DOperations.renderTrianglePlanes();

@@ -18,7 +18,7 @@ namespace _3DSandbox
         private bool cameraNeedsPositionUpdate = false;
         private bool cameraNeedsRotationUpdate = false;
 
-        public TextBlock informationTextBlock;
+        public TextBox informationTextBlock;
 
         // The camera.
         public PerspectiveCamera TheCamera;
@@ -32,9 +32,9 @@ namespace _3DSandbox
         private double CameraY = 0;
         private double CameraZ = 0;
 
-        private double CameraDX = 0.5;
-        private double CameraDY = 0.5;
-        private double CameraDZ = 0.5;
+        private double CameraDX = 2.5;
+        private double CameraDY = 2.5;
+        private double CameraDZ = 2.5;
 
         private double CameraLookX = 0;
         private double CameraLookY = 0;
@@ -61,7 +61,7 @@ namespace _3DSandbox
         /// Initialize all of the functionalities of the render view.
         /// </summary>
         /// <param name="viewport"></param>
-        public void initialize3DRenderView(ref Viewport3D viewport, ref TextBlock informationTextBlock,
+        public void initialize3DRenderView(ref Viewport3D viewport, ref TextBox informationTextBlock,
             ref Kinect3DOperations kinect3DOperations)
         {
             this.informationTextBlock = informationTextBlock;

@@ -70,7 +70,7 @@ namespace _3DSandbox
 
         public Kinect3DOperations(ref DepthMasterControl depthMasterControl,
                                   ref RenderViewFunctionalities renderViewFunctionalities,
-                                  ref TextBlock informationTextBlock, ref TextBox cubeInformationTextBox)
+                                  ref TextBox informationTextBlock, ref TextBox cubeInformationTextBox)
         {
             this.depthMasterControl = depthMasterControl;
             this.renderViewFunctionalities = renderViewFunctionalities;
@@ -94,7 +94,7 @@ namespace _3DSandbox
         
         public DepthMasterControl depthMasterControl;
         public RenderViewFunctionalities renderViewFunctionalities;
-        public TextBlock informationTextBlock;
+        public TextBox informationTextBlock;
         public TextBox cubeInformationTextBox;
 
         public const int RealsenseWidth = 848;

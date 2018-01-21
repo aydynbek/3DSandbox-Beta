@@ -32,7 +32,7 @@
 					<Grid>
 						<Border BorderBrush="Black" BorderThickness="3">
 							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-								<TextBlock Name="InformationTextBlock"
+								<TextBox Name="InformationTextBlock" Background="#D9CEA4"
 									Text="" TextWrapping="Wrap" TextAlignment="Justify" AllowDrop="False" FontSize="20"
 									FontFamily="Times New Roman" />
 							</ScrollViewer>
