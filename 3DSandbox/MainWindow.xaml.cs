@@ -201,7 +201,8 @@
 
         private void CreatePointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
-            kinect3DOperations.createPointCloudMesh();
+            //kinect3DOperations.createPointCloudMesh();
+            kinect3DOperations.createPointCloudMeshRealsense();
         }
 
         private void RenderPointCloudMeshButton_Click(object sender, RoutedEventArgs e)

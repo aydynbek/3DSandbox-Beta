@@ -96,7 +96,10 @@ namespace _3DSandbox
         public RenderViewFunctionalities renderViewFunctionalities;
         public TextBlock informationTextBlock;
         public TextBox cubeInformationTextBox;
-        
+
+        public const int RealsenseWidth = 848;
+        public const int RealsenseHeight = 480;
+
         //public double cubeSize = .3;
         public double cubeSize = .64;
 
@@ -171,7 +174,7 @@ namespace _3DSandbox
                     new SpecularMaterial(new SolidColorBrush(Color.FromArgb(75, 255, 255, 0)), 30.0);
         MaterialGroup qOuterMaterial = new MaterialGroup();
 
-        public double acceptableDistance = .75;
+        public double acceptableDistance = .75 * 30;
         //public double acceptableDistance = 1.55;
 
         public Dictionary<int, Dictionary<int, int>> indexedPoints =
@@ -347,6 +350,7 @@ namespace _3DSandbox
 
                 cubeInformationTextBox.Text += "**********" + "\n";
                 cubeInformationTextBox.Text += "Cube Plane Equation Constant: " + cubeToHandle.planeEquationConstant.ToString("n4") + "\n";
+                
                 cubeInformationTextBox.Text += "Cube Plane Normal X: " + cubeToHandle.planeEquationNormalVector.X.ToString("n4") + "\n";
                 cubeInformationTextBox.Text += "Cube Plane Normal Y: " + cubeToHandle.planeEquationNormalVector.Y.ToString("n4") + "\n";
                 cubeInformationTextBox.Text += "Cube Plane Normal Z: " + cubeToHandle.planeEquationNormalVector.Z.ToString("n4") + "\n";
@@ -958,7 +962,7 @@ namespace _3DSandbox
             Cube cubeToHandle;
             Triangle triangleToHandle;
 
-            informationTextBlock.Text = "Cube Count: " + allCubes.Count.ToString() + "\n";
+            informationTextBlock.Text += "Cube Count: " + allCubes.Count.ToString() + "\n";
 
             foreach (string cubeId in allCubes.Keys)
             {
@@ -1393,7 +1397,7 @@ namespace _3DSandbox
 
             if(pointCloudVertices.Count == 0)
             {
-                // get the point cloud from the depth frame:
+                // Get the point cloud from the depth frame:
                 pointCloudVertices = depthMasterControl.savedPointCloudList;
             }
 
@@ -1446,6 +1450,111 @@ namespace _3DSandbox
                     cubePointCloudVertices[gridLimitsStrWholes] = singleCubeVertices;
                 }
             }
+        }
+
+        /// <summary>
+        /// This function renders the point cloud as a connected 3D mesh. The triangulation process
+        /// is based on the fact that the depth data comes in a 2D array which therefore allows us to
+        /// connect verticees together as triangles as long as their distances are not far in between.
+        /// For Realsense camera testing.
+        /// </summary>
+        public void createPointCloudMeshRealsense()
+        {
+            Dictionary<int, int> currentColumnPoints, nextColumnPoints;
+            int rowIndexCount = 0;
+            int nextRowIndex = 0;
+            int triangleIndex = 0;
+            Point3D[] trianglePointsArray;
+            Point3D basePoint, downPoint, rightPoint, diagonalPoint;
+            int basePointId, downPointId, rightPointId, diagonalPointId;
+            double distanceDown = 0, distanceRight = 0, distanceDiagonal = 0;
+            double x, y, z;
+            Vector3D normalVectorOfTriangle;
+
+            createPointCloudActualMeshRealsense();
+            informationTextBlock.Text = indexedPoints.Count + "\n";
+            informationTextBlock.Text += pointCloudIndexed.Count + "\n";
+            int i = 0;
+
+            foreach (int rowIndex in indexedPoints.Keys)
+            {
+                if (rowIndexCount < (RealsenseHeight - 1))
+                {
+                    nextRowIndex = rowIndex + 1;
+                    currentColumnPoints = indexedPoints[rowIndex];
+                    nextColumnPoints = indexedPoints[nextRowIndex];
+
+                    foreach (int columnIndex in currentColumnPoints.Keys)
+                    {
+                        if (columnIndex < (RealsenseWidth - 1))
+                        {
+                            basePoint = pointCloudIndexed[(indexedPoints[rowIndex])[columnIndex]];
+                            downPoint = pointCloudIndexed[(indexedPoints[nextRowIndex])[columnIndex]];
+                            rightPoint = pointCloudIndexed[(indexedPoints[rowIndex])[columnIndex + 1]];
+                            diagonalPoint = pointCloudIndexed[(indexedPoints[nextRowIndex])[columnIndex + 1]];
+
+                            basePointId = (indexedPoints[rowIndex])[columnIndex];
+                            downPointId = (indexedPoints[nextRowIndex])[columnIndex];
+                            rightPointId = (indexedPoints[rowIndex])[columnIndex + 1];
+                            diagonalPointId = (indexedPoints[nextRowIndex])[columnIndex + 1];
+
+                            x = basePoint.X - downPoint.X;
+                            y = basePoint.Y - downPoint.Y;
+                            z = basePoint.Z - downPoint.Z;
+                            distanceDown = Math.Sqrt(x * x + y * y + z * z);
+
+                            x = basePoint.X - diagonalPoint.X;
+                            y = basePoint.Y - diagonalPoint.Y;
+                            z = basePoint.Z - diagonalPoint.Z;
+                            distanceDiagonal = Math.Sqrt(x * x + y * y + z * z);
+
+                            x = basePoint.X - rightPoint.X;
+                            y = basePoint.Y - rightPoint.Y;
+                            z = basePoint.Z - rightPoint.Z;
+                            distanceRight = Math.Sqrt(x * x + y * y + z * z);
+
+                            if(i < 100 && rowIndex == 200)
+                            {
+                                informationTextBlock.Text += distanceDown.ToString() + "\n";
+                                i++;
+                            }
+
+                            if (distanceDown < acceptableDistance && distanceDiagonal < acceptableDistance)
+                            {
+                                trianglePointsArray = new Point3D[3];
+                                trianglePointsArray[0] = basePoint;
+                                trianglePointsArray[1] = downPoint;
+                                trianglePointsArray[2] = diagonalPoint;
+
+                                normalVectorOfTriangle = MathAncillary.getNormalVectorOfTriangle(trianglePointsArray[0],
+                                    trianglePointsArray[1], trianglePointsArray[2]);
+                                actualMeshTriangleNormalVectors.Add(triangleIndex, normalVectorOfTriangle);
+                                actualMeshTriangleListIndexed.Add(triangleIndex, new int[3] { basePointId, downPointId, diagonalPointId });
+                                actualMeshTriangleList.Add(triangleIndex++, trianglePointsArray);
+                            }
+
+                            if (distanceRight < acceptableDistance && distanceDiagonal < acceptableDistance)
+                            {
+                                trianglePointsArray = new Point3D[3];
+                                trianglePointsArray[0] = basePoint;
+                                trianglePointsArray[1] = diagonalPoint;
+                                trianglePointsArray[2] = rightPoint;
+
+                                normalVectorOfTriangle = MathAncillary.getNormalVectorOfTriangle(trianglePointsArray[0],
+                                   trianglePointsArray[1], trianglePointsArray[2]);
+                                actualMeshTriangleNormalVectors.Add(triangleIndex, normalVectorOfTriangle);
+                                actualMeshTriangleListIndexed.Add(triangleIndex, new int[3] { basePointId, rightPointId, diagonalPointId });
+                                actualMeshTriangleList.Add(triangleIndex++, trianglePointsArray);
+                            }
+                        }
+                    }
+                }
+                
+                rowIndexCount++;
+            }
+
+            informationTextBlock.Text += "SEEEE " + actualMeshTriangleList.Count + "\n";
+            informationTextBlock.Text += "SEEEE1 " + actualMeshTriangleListIndexed.Count + "\n";
         }
 
 
@@ -2081,6 +2190,7 @@ namespace _3DSandbox
                 }
 
                 cubeToHandle.planeEquationConstant = contstantOfPlaneEq;
+                cubeToHandle.planeEquationNormalVector.Normalize();
                 cubeToHandle.planeEquationNormalVector = normalVector;
 
                 findCubeCrossSectionsAndUpdateDataStructures(cubeToHandle.cubeId, ref facedVerticesIndex, cubeLimits,
@@ -2207,8 +2317,10 @@ namespace _3DSandbox
                 }
 
                 cubeToHandle.planeEquationConstant = contstantOfPlaneEq;
-                cubeToHandle.planeEquationNormalVector = normalVector;
                 
+                cubeToHandle.planeEquationNormalVector = normalVector;
+                cubeToHandle.planeEquationNormalVector.Normalize();
+
                 findCubeCrossSectionsAndUpdateDataStructures(cubeToHandle.cubeId, ref facedVerticesIndex, cubeLimits,
                        normalVector.X, normalVector.Y, normalVector.Z, contstantOfPlaneEq);
             }
@@ -2263,8 +2375,9 @@ namespace _3DSandbox
                 + point1.Z * normalVector.Z;
 
             cubeToHandle.planeEquationConstant = contstantOfPlaneEq;
+
             cubeToHandle.planeEquationNormalVector = normalVector;
-            
+            cubeToHandle.planeEquationNormalVector.Normalize();
             // Sometimes the equation of the plane comes with 2 coefficients that are 0;
             // These are the planes that have their normal vectors point in the direction
             // of an axis. This case creates problems when we try to calculate cross sections.
@@ -2302,10 +2415,16 @@ namespace _3DSandbox
                     normalVector.X, normalVector.Y, normalVector.Z, contstantOfPlaneEq);
         }
 
-
-
-        public void calculatePlaneOfCubePointMerging(Cube cubeToHandle, ref int facedVerticesIndex,
-            List<Point3D> pointCloudVerticesOfCube)
+        /// <summary>
+        /// This method generates a plane for the cube (in the form of a triangle) by using all
+        /// point cloud points. First 3 points are chosen and the subsequent points then shift the 
+        /// closest of the 3 triangle points until we have a plane of best fit.
+        /// </summary>
+        /// <param name="cubeToHandle"></param>
+        /// <param name="facedVerticesIndex"></param>
+        /// <param name="pointCloudVerticesOfCube"></param>
+        public void calculatePlaneOfCubeTriangleIterativeGeneration(Cube cubeToHandle, ref int facedVerticesIndex,
+           List<Point3D> pointCloudVerticesOfCube)
         {
             Point3D[] trianglePoints = new Point3D[3];
 
@@ -2366,7 +2485,8 @@ namespace _3DSandbox
 
                 cubeToHandle.planeEquationConstant = contstantOfPlaneEq;
                 cubeToHandle.planeEquationNormalVector = normalVector;
-
+                cubeToHandle.planeEquationNormalVector.Normalize();
+                
                 if (facedVerticesIndex < 50)
                 {
                     informationTextBlock.Text += "shehshe " + normalVector.X.ToString("n6") + "," +
@@ -2403,11 +2523,312 @@ namespace _3DSandbox
                     contstantOfPlaneEq = trianglePoints[1].X * normalVector.X + trianglePoints[1].Y * normalVector.Y
                     + trianglePoints[1].Z * normalVector.Z;
                 }
-                
+
 
                 findCubeCrossSectionsAndUpdateDataStructures(cubeToHandle.cubeId, ref facedVerticesIndex, cubeLimits,
                        normalVector.X, normalVector.Y, normalVector.Z, contstantOfPlaneEq);
             }
+        }
+
+        public void calculatePlaneOfCubePointMerging(Cube cubeToHandle, ref int facedVerticesIndex,
+            List<Point3D> pointCloudVerticesOfCube)
+        {
+            Point3D[] trianglePoints = new Point3D[3];
+
+            Dictionary<int, Point3D> containedGridVertices = new Dictionary<int, Point3D>();
+            var allCubeIds = cubePointCloudVertices.Keys;
+            int verticesCount = 0;
+            int closestIndex = 0;
+            Vector3D vector1, vector2;
+            double[] cubeLimits = new double[6];
+
+            Vector3D normalVector = new Vector3D();
+            double constantOfPlaneEq = 0;
+
+            cubeLimits[0] = cubeToHandle.xFloor;
+            cubeLimits[1] = cubeToHandle.xCeiling;
+            cubeLimits[2] = cubeToHandle.yFloor;
+            cubeLimits[3] = cubeToHandle.yCeiling;
+            cubeLimits[4] = cubeToHandle.zFloor;
+            cubeLimits[5] = cubeToHandle.zCeiling;
+
+            Point3D At = pointCloudVerticesOfCube[0];
+            Point3D Bt = pointCloudVerticesOfCube[1];
+            Point3D Ct = pointCloudVerticesOfCube[2];
+
+            // Create the initial triangle:
+            Point3D A = new Point3D(pointCloudVerticesOfCube[0].X, pointCloudVerticesOfCube[0].Y, pointCloudVerticesOfCube[0].Z);
+            Point3D B = new Point3D(pointCloudVerticesOfCube[1].X, pointCloudVerticesOfCube[1].Y, pointCloudVerticesOfCube[1].Z);
+            Point3D C = new Point3D(pointCloudVerticesOfCube[2].X, pointCloudVerticesOfCube[2].Y, pointCloudVerticesOfCube[2].Z);
+
+            // Save the points so that we can add them back later:
+            Point3D As = new Point3D(pointCloudVerticesOfCube[0].X, pointCloudVerticesOfCube[0].Y, pointCloudVerticesOfCube[0].Z);
+            Point3D Bs = new Point3D(pointCloudVerticesOfCube[1].X, pointCloudVerticesOfCube[1].Y, pointCloudVerticesOfCube[1].Z);
+            Point3D Cs = new Point3D(pointCloudVerticesOfCube[2].X, pointCloudVerticesOfCube[2].Y, pointCloudVerticesOfCube[2].Z);
+
+            // Remove the initial triangle points so that they dont appear in iterative calculation:
+            pointCloudVerticesOfCube.Remove(At);
+            pointCloudVerticesOfCube.Remove(Bt);
+            pointCloudVerticesOfCube.Remove(Ct);
+
+            double dAx = 0;
+            double dAy = 0;
+            double dAz = 0;
+
+            double dBx = 0;
+            double dBy = 0;
+            double dBz = 0;
+
+            double dCx = 0;
+            double dCy = 0;
+            double dCz = 0;
+
+            double distA = 0;
+            double distB = 0;
+            double distC = 0;
+
+            int closestPoint = 0;
+
+            int accumulatorA = 0;
+            int accumulatorB = 0;
+            int accumulatorC = 0;
+
+            if (cubeToHandle.cubeId.Equals("-13/-12,-5/-4,-69/-68"))
+            {
+                /*
+                pointCloudVerticesOfCube = new List<Point3D>();
+                pointCloudVerticesOfCube.Add(new Point3D(-12.614800, -4.068210, -68.850000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.790400, -4.072640, -68.925000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.905300, -4.864430, -68.675000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.157400, -4.983660, -68.100000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.344500, -4.994630, -68.250000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.776500, -4.229930, -68.850000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.952300, -4.234540, -68.925000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.045900, -4.361360, -68.375000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.228800, -4.369330, -68.500000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.067900, -4.208430, -68.500000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.246700, -4.214570, -68.600000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.421400, -4.219180, -68.675000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.601000, -4.225320, -68.775000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.914700, -4.706540, -68.725000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.175300, -4.830780, -68.200000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.358100, -4.839630, -68.325000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.541500, -4.848490, -68.450000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.385200, -4.528570, -68.475000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.564400, -4.535190, -68.575000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.744000, -4.541800, -68.675000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.924100, -4.548420, -68.775000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.006300, -4.667160, -68.150000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.188700, -4.675720, -68.275000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.371700, -4.684280, -68.400000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.550600, -4.691130, -68.500000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.734700, -4.699690, -68.625000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.720800, -4.855570, -68.550000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.403300, -4.374110, -68.575000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.582700, -4.380490, -68.675000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.762600, -4.386870, -68.775000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.938200, -4.391650, -68.850000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.028300, -4.515350, -68.275000));
+                pointCloudVerticesOfCube.Add(new Point3D(-12.206500, -4.521960, -68.375000));
+                */
+
+                cubeInformationTextBox.Text = "";
+                cubeInformationTextBox.Text += "P1: " + A.X.ToString("n6") + "," +
+                    A.Y.ToString("n6") + "," + A.Z.ToString("n6") + "\n";
+                cubeInformationTextBox.Text += "P2: " + B.X.ToString("n6") + "," +
+                    B.Y.ToString("n6") + "," + B.Z.ToString("n6") + "\n";
+                cubeInformationTextBox.Text += "P3: " + C.X.ToString("n6") + "," +
+                    C.Y.ToString("n6") + "," + C.Z.ToString("n6") + "\n";
+                
+            }
+
+            // Go through each point and merge all to just have 3 vertices for plane creation:
+            foreach (Point3D vertexPoint in pointCloudVerticesOfCube)
+            {
+                if (cubeToHandle.cubeId.Equals("-13/-12,-5/-4,-69/-68"))
+                {
+                    cubeInformationTextBox.Text += "P: " + vertexPoint.X.ToString("n6") + "," +
+                        vertexPoint.Y.ToString("n6") + "," + vertexPoint.Z.ToString("n6") + "\n";
+                }
+
+                // Calculate distances between triangle points:
+                dAx = vertexPoint.X - A.X;
+                dAy = vertexPoint.Y - A.Y;
+                dAz = vertexPoint.Z - A.Z;
+
+                dBx = vertexPoint.X - B.X;
+                dBy = vertexPoint.Y - B.Y;
+                dBz = vertexPoint.Z - B.Z;
+
+                dCx = vertexPoint.X - C.X;
+                dCy = vertexPoint.Y - C.Y;
+                dCz = vertexPoint.Z - C.Z;
+
+                distA = dAx * dAx + dAy * dAy + dAz * dAz;
+                distB = dBx * dBx + dBy * dBy + dBz * dBz;
+                distC = dCx * dCx + dCy * dCy + dCz * dCz;
+
+                // Find the closest triangle point:
+                if (distA < distB && distA < distC)
+                {
+                    
+                    closestPoint = 1;
+                    accumulatorA++;
+
+                    dAx /= 2;
+                    dAy /= 2;
+                    dAz /= 2;
+
+                    dAx /= accumulatorA;
+                    dAy /= accumulatorA;
+                    dAz /= accumulatorA;
+
+                    A.X += dAx;
+                    A.Y += dAy;
+                    A.Z += dAz;
+
+                    if (cubeToHandle.cubeId.Equals("-13/-12,-5/-4,-69/-68"))
+                    {
+                        cubeInformationTextBox.Text += "A: " + A.X.ToString("n6") + "," +
+                            A.Y.ToString("n6") + "," + A.Z.ToString("n6") + "\n";
+                    }
+                }
+                else
+                {
+                    if (distB < distC)
+                    {
+                        closestPoint = 2;
+                        accumulatorB++;
+
+                        dBx /= 2;
+                        dBy /= 2;
+                        dBz /= 2;
+
+                        dBx /= accumulatorB;
+                        dBy /= accumulatorB;
+                        dBz /= accumulatorB;
+
+                        B.X += dBx;
+                        B.Y += dBy;
+                        B.Z += dBz;
+
+                        if (cubeToHandle.cubeId.Equals("-13/-12,-5/-4,-69/-68"))
+                        {
+                            cubeInformationTextBox.Text += "B: " + B.X.ToString("n6") + "," +
+                                B.Y.ToString("n6") + "," + B.Z.ToString("n6") + "\n";
+                        }
+                    }
+                    else
+                    {
+                        closestPoint = 3;
+                        accumulatorC++;
+
+                        dCx /= 2;
+                        dCy /= 2;
+                        dCz /= 2;
+
+                        dCx /= accumulatorC;
+                        dCy /= accumulatorC;
+                        dCz /= accumulatorC;
+
+                        C.X += dCx;
+                        C.Y += dCy;
+                        C.Z += dCz;
+
+                        if (cubeToHandle.cubeId.Equals("-13/-12,-5/-4,-69/-68"))
+                        {
+                            cubeInformationTextBox.Text += "C: " + C.X.ToString("n6") + "," +
+                                C.Y.ToString("n6") + "," + C.Z.ToString("n6") + "\n";
+                        }
+                    }
+                }
+            }
+
+            // Add points back:
+            pointCloudVerticesOfCube.Add(As);
+            pointCloudVerticesOfCube.Add(Bs);
+            pointCloudVerticesOfCube.Add(Cs);
+            
+            trianglePoints[0] = A;
+            trianglePoints[1] = B;
+            trianglePoints[2] = C;
+
+            cubeToHandle.planeTrianglePoints = trianglePoints;
+            
+            // Find normal vector of plane:
+            vector1 = new Vector3D(trianglePoints[1].X - trianglePoints[0].X,
+                trianglePoints[1].Y - trianglePoints[0].Y,
+                trianglePoints[1].Z - trianglePoints[0].Z);
+
+            vector2 = new Vector3D(trianglePoints[2].X - trianglePoints[0].X,
+                trianglePoints[2].Y - trianglePoints[0].Y,
+                trianglePoints[2].Z - trianglePoints[0].Z);
+
+            normalVector = Vector3D.CrossProduct(vector1, vector2);
+
+            // Lets get the constant part of the equation of plane:
+            constantOfPlaneEq = trianglePoints[1].X * normalVector.X + trianglePoints[1].Y * normalVector.Y
+                + trianglePoints[1].Z * normalVector.Z;
+
+            cubeToHandle.planeEquationConstant = constantOfPlaneEq;
+            cubeToHandle.planeEquationNormalVector = normalVector;
+            cubeToHandle.planeEquationNormalVector.Normalize();
+
+            if (cubeToHandle.cubeId.Equals("-13/-12,-5/-4,-69/-68"))
+            {
+                informationTextBlock.Text += "Cube Normallleee: " + cubeToHandle.planeEquationNormalVector.X.ToString("n6") + "," +
+                    cubeToHandle.planeEquationNormalVector.Y.ToString("n6") + "," + cubeToHandle.planeEquationNormalVector.Z.ToString("n6") + "\n";
+                informationTextBlock.Text += "A Normallleee: " + A.X.ToString("n6") + "," +
+                    A.Y.ToString("n6") + "," + A.Z.ToString("n6") + "\n";
+                informationTextBlock.Text += "B Normallleee: " + B.X.ToString("n6") + "," +
+                    B.Y.ToString("n6") + "," + B.Z.ToString("n6") + "\n";
+                informationTextBlock.Text += "C Normallleee: " + C.X.ToString("n6") + "," +
+                    C.Y.ToString("n6") + "," + C.Z.ToString("n6") + "\n";
+                informationTextBlock.Text += "***********\n";
+                
+
+                foreach (Point3D vertexPoint in pointCloudVerticesOfCube)
+                {
+                    informationTextBlock.Text += vertexPoint.X.ToString("n6") + "," +
+                    vertexPoint.Y.ToString("n6") + "," + vertexPoint.Z.ToString("n6") + "\n";
+                }
+
+                informationTextBlock.Text += "***********\n";
+            }
+
+            // Sometimes the equation of the plane comes with 2 coefficients that are 0;
+            // These are the planes that have their normal vectors point in the direction
+            // of an axis. This case creates problems when we try to calculate cross sections.
+            // We solve this problem by adding a small value to the normal vector components.
+
+            int countZeros = 0;
+            double zeroDouble = 0.0;
+            if (zeroDouble.CompareTo(normalVector.X) == 0)
+            {
+                countZeros++;
+            }
+            if (zeroDouble.CompareTo(normalVector.Y) == 0)
+            {
+                countZeros++;
+            }
+            if (zeroDouble.CompareTo(normalVector.Z) == 0)
+            {
+                countZeros++;
+            }
+
+            if (countZeros >= 2)
+            {
+                // Add small amount to the normal vector components:
+                normalVector.X += 0.0001;
+                normalVector.Y += 0.0001;
+                normalVector.Z += 0.0001;
+
+                constantOfPlaneEq = trianglePoints[1].X * normalVector.X + trianglePoints[1].Y * normalVector.Y
+                + trianglePoints[1].Z * normalVector.Z;
+            }
+                
+            findCubeCrossSectionsAndUpdateDataStructures(cubeToHandle.cubeId, ref facedVerticesIndex, cubeLimits,
+                    normalVector.X, normalVector.Y, normalVector.Z, constantOfPlaneEq);
         }
 
 
@@ -2437,24 +2858,32 @@ namespace _3DSandbox
             
             foreach (string cubeId in allCubeIds)
             {
-                cubeToHandle = allCubes[cubeId];
-
-                // Get the cube delimiters:
-                cubeLimits[0] = cubeToHandle.xFloor;
-                cubeLimits[1] = cubeToHandle.xCeiling;
-                cubeLimits[2] = cubeToHandle.yFloor;
-                cubeLimits[3] = cubeToHandle.yCeiling;
-                cubeLimits[4] = cubeToHandle.zFloor;
-                cubeLimits[5] = cubeToHandle.zCeiling;
-
                 // Get the list of all raw point cloud vertices of the cube:
                 pointCloudVerticesOfCube = cubePointCloudVertices[cubeId];
 
-                trianglePoints = new Point3D[3];
+                // If we have at least 3 points (minimum required to generate a plane),
+                // determine the plane of the cube:
+                if (pointCloudVerticesOfCube.Count >= 3)
+                {
+                    cubeToHandle = allCubes[cubeId];
 
-                //calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
-                calculatePlaneOfCubePointMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
-                //calculatePlaneOfCubeNormalsMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+                    // Get the cube delimiters:
+                    cubeLimits[0] = cubeToHandle.xFloor;
+                    cubeLimits[1] = cubeToHandle.xCeiling;
+                    cubeLimits[2] = cubeToHandle.yFloor;
+                    cubeLimits[3] = cubeToHandle.yCeiling;
+                    cubeLimits[4] = cubeToHandle.zFloor;
+                    cubeLimits[5] = cubeToHandle.zCeiling;
+                    
+                    trianglePoints = new Point3D[3];
+
+                    calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+
+                    //calculatePlaneOfCubePointMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+
+                    //calculatePlaneOfCubeNormalsMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+                }
+
             }
             
             // Find the neighbors of the cube:
@@ -3735,6 +4164,7 @@ namespace _3DSandbox
 
             file.Close();
         }
+        
 
         /// <summary>
         /// Extract vertices and triangles from their designated files.
@@ -3799,6 +4229,28 @@ namespace _3DSandbox
             }
         }
 
+
+        public void createPointCloudActualMeshRealsense()
+        {
+            Dictionary<int, int> columnList;
+            int newPointIndex = 0;
+            
+            for (int i = 0; i < RealsenseHeight; i++)    
+            {
+                columnList = new Dictionary<int, int>();
+                for (int j = 0; j < RealsenseWidth; j++)     
+                {
+                    pointCloudIndexed.Add(newPointIndex, pointCloudVertices[(i * RealsenseWidth) + j]);
+                    columnList.Add(j, newPointIndex++);
+                }
+                indexedPoints.Add(i, columnList);
+            }
+            
+        }
+
+
+
+
         public void runPlaneTest()
         {
             char splitter = ' ';
@@ -3828,10 +4280,18 @@ namespace _3DSandbox
             Vertex A = verticeesList[0];
             Vertex B = verticeesList[1];
             Vertex C = verticeesList[2];
+            
+            Point3D P1 = new Point3D(-12.614800, -4.068210, -68.850000);
+            Point3D P2 = new Point3D(-12.260100, -4.057870, -68.675000);
+            Point3D P3 = new Point3D(-12.439500, -4.063780, -68.775000);
 
-            verticeesList.Remove(A);
-            verticeesList.Remove(B);
-            verticeesList.Remove(C);
+            A.vertexPosition = P1;
+            B.vertexPosition = P2;
+            C.vertexPosition = P3;
+            
+            //verticeesList.Remove(A);
+            //verticeesList.Remove(B);
+            //verticeesList.Remove(C);
 
             double dAx = 0;
             double dAy = 0;
@@ -3855,6 +4315,41 @@ namespace _3DSandbox
             int accumulatorB = 0;
             int accumulatorC = 0;
 
+            verticeesList = new List<Vertex>();
+            verticeesList.Add(new Vertex(1, new Point3D(-12.081200, -4.051960, -68.575000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.790400, -4.072640, -68.925000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.067900, -4.208430, -68.500000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.246700, -4.214570, -68.600000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.421400, -4.219180, -68.675000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.601000, -4.225320, -68.775000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.776500, -4.229930, -68.850000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.952300, -4.234540, -68.925000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.045900, -4.361360, -68.375000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.228800, -4.369330, -68.500000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.403300, -4.374110, -68.575000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.582700, -4.380490, -68.675000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.762600, -4.386870, -68.775000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.938200, -4.391650, -68.850000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.028300, -4.515350, -68.275000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.206500, -4.521960, -68.375000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.385200, -4.528570, -68.475000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.564400, -4.535190, -68.575000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.744000, -4.541800, -68.675000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.924100, -4.548420, -68.775000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.006300, -4.667160, -68.150000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.188700, -4.675720, -68.275000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.371700, -4.684280, -68.400000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.550600, -4.691130, -68.500000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.734700, -4.699690, -68.625000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.914700, -4.706540, -68.725000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.175300, -4.830780, -68.200000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.358100, -4.839630, -68.325000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.541500, -4.848490, -68.450000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.720800, -4.855570, -68.550000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.905300, -4.864430, -68.675000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.157400, -4.983660, -68.100000)));
+            verticeesList.Add(new Vertex(1, new Point3D(-12.344500, -4.994630, -68.250000)));
+
             foreach (Vertex vert in verticeesList)
             {
                 // Calculate distances between triangle points:
@@ -3874,6 +4369,9 @@ namespace _3DSandbox
                 distB = dBx * dBx + dBy * dBy + dBz * dBz;
                 distC = dCx * dCx + dCy * dCy + dCz * dCz;
 
+                cubeInformationTextBox.Text += "P: " + vert.vertexPosition.X.ToString("n6") + "," +
+                           vert.vertexPosition.Y.ToString("n6") + "," + vert.vertexPosition.Z.ToString("n6") + "\n";
+
                 // Find the closest triangle point:
                 if (distA < distB && distA < distC)
                 {
@@ -3891,6 +4389,9 @@ namespace _3DSandbox
                     A.vertexPosition.X += dAx;
                     A.vertexPosition.Y += dAy;
                     A.vertexPosition.Z += dAz;
+
+                    cubeInformationTextBox.Text += "A: " + A.vertexPosition.X.ToString("n6") + "," +
+                           A.vertexPosition.Y.ToString("n6") + "," + A.vertexPosition.Z.ToString("n6") + "\n";
                 } else
                 {
                     if(distB < distC)
@@ -3909,6 +4410,9 @@ namespace _3DSandbox
                         B.vertexPosition.X += dBx;
                         B.vertexPosition.Y += dBy;
                         B.vertexPosition.Z += dBz;
+
+                        cubeInformationTextBox.Text += "B: " + B.vertexPosition.X.ToString("n6") + "," +
+                           B.vertexPosition.Y.ToString("n6") + "," + B.vertexPosition.Z.ToString("n6") + "\n";
                     } else
                     {
                         closestPoint = 3;
@@ -3925,6 +4429,9 @@ namespace _3DSandbox
                         C.vertexPosition.X += dCx;
                         C.vertexPosition.Y += dCy;
                         C.vertexPosition.Z += dCz;
+
+                        cubeInformationTextBox.Text += "C: " + C.vertexPosition.X.ToString("n6") + "," +
+                           C.vertexPosition.Y.ToString("n6") + "," + C.vertexPosition.Z.ToString("n6") + "\n";
                     }
                 }
             }
@@ -3937,7 +4444,15 @@ namespace _3DSandbox
                              A.vertexPosition.Y - C.vertexPosition.Y,
                              A.vertexPosition.Z - C.vertexPosition.Z));
 
-            informationTextBlock.Text = normalVector.ToString();
+            normalVector.Normalize();
+            informationTextBlock.Text = normalVector.ToString() + "\n";
+
+            informationTextBlock.Text += "A Normallleee: " + A.vertexPosition.X.ToString("n6") + "," +
+                   A.vertexPosition.Y.ToString("n6") + "," + A.vertexPosition.Z.ToString("n6") + "\n";
+            informationTextBlock.Text += "B Normallleee: " + B.vertexPosition.X.ToString("n6") + "," +
+                   B.vertexPosition.Y.ToString("n6") + "," + B.vertexPosition.Z.ToString("n6") + "\n";
+            informationTextBlock.Text += "C Normallleee: " + C.vertexPosition.X.ToString("n6") + "," +
+                   C.vertexPosition.Y.ToString("n6") + "," + C.vertexPosition.Z.ToString("n6") + "\n";
 
             vertices = new List<string>();
             triangles = new List<string>();
@@ -3948,7 +4463,7 @@ namespace _3DSandbox
 
             triangles.Add("1/1/1 2/2/1 3/3/2");
             
-            informationTextBlock.Text = "Count: " + verticeesList.Count.ToString() + "\n";
+            informationTextBlock.Text += "Count: " + verticeesList.Count.ToString() + "\n";
             informationTextBlock.Text += "Time: " + sWatch.ElapsedMilliseconds.ToString() + "\n";
         }
         

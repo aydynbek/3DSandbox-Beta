@@ -40,6 +40,8 @@ namespace _3DSandbox
         private double CameraLookY = 0;
         private double CameraLookZ = 0;
 
+        private bool shiftKeyPressed = false;
+
         private Vector3D cameraVerticalAxis = new Vector3D(0, 1, 0);
         private Vector3D cameraHorizontalAxis = new Vector3D(1, 0, 0);
 
@@ -127,6 +129,16 @@ namespace _3DSandbox
         {
             switch (key.Key)
             {
+                case Key.F5:
+                    CameraDY = CameraDY * 2;
+                    CameraDX = CameraDX * 2;
+                    CameraDZ = CameraDZ * 2;
+                    break;
+                case Key.F6:
+                    CameraDY = CameraDY / 2;
+                    CameraDX = CameraDX / 2;
+                    CameraDZ = CameraDZ / 2;
+                    break;
                 case Key.R:
                     CameraY += CameraDY;
                     cameraNeedsPositionUpdate = true;
