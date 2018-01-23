@@ -32,15 +32,15 @@ namespace _3DSandbox
             {ConnectOfCube.CD, ConnectOfCube.RIGHT, ConnectOfCube.TOP },    // CD
             {ConnectOfCube.DA, ConnectOfCube.FRONT, ConnectOfCube.TOP },    // DA
 
-            {ConnectOfCube.EF, ConnectOfCube.LEFT, ConnectOfCube.BOTTOM },    // EF
-            {ConnectOfCube.FG, ConnectOfCube.BACK, ConnectOfCube.BOTTOM },    // FG
+            {ConnectOfCube.EF, ConnectOfCube.LEFT, ConnectOfCube.BOTTOM },     // EF
+            {ConnectOfCube.FG, ConnectOfCube.BACK, ConnectOfCube.BOTTOM },     // FG
             {ConnectOfCube.GH, ConnectOfCube.RIGHT, ConnectOfCube.BOTTOM },    // GH
             {ConnectOfCube.HE, ConnectOfCube.FRONT, ConnectOfCube.BOTTOM },    // HE
 
             {ConnectOfCube.AE, ConnectOfCube.LEFT, ConnectOfCube.FRONT },    // AE
-            {ConnectOfCube.BF, ConnectOfCube.LEFT, ConnectOfCube.BACK },    // BF
+            {ConnectOfCube.BF, ConnectOfCube.LEFT, ConnectOfCube.BACK },     // BF
             {ConnectOfCube.CG, ConnectOfCube.RIGHT, ConnectOfCube.BACK },    // CG
-            {ConnectOfCube.DH, ConnectOfCube.RIGHT, ConnectOfCube.FRONT}    // DH
+            {ConnectOfCube.DH, ConnectOfCube.RIGHT, ConnectOfCube.FRONT}     // DH
         };
 
         EdgesOfCube[,] edgeNeighborsComplimentaryEdge = new EdgesOfCube[12, 3]
@@ -603,15 +603,13 @@ namespace _3DSandbox
             double Z_gridLimitCeilingCurr = 0;
 
             string[,,] allNeighborKeys = new string[neighborhoodSize, neighborhoodSize, neighborhoodSize];
-
-            string[] pairSeperatedKey;
-            string[] rangeSeperatedKey;
-
-            int i, j, k, strIndex = 0;
+            
+            int i, j, k;
             int midpoint = neighborhoodSize / 2;
 
             int offsetStarting = (neighborhoodSize / 2) * -1;
             int[] offsets = new int[neighborhoodSize];
+
             for (i = 0; i < neighborhoodSize; i++)
             {
                 offsets[i] = offsetStarting;
@@ -629,29 +627,30 @@ namespace _3DSandbox
 
             for (i = 0; i < neighborhoodSize; i++)
             {
+                X_gridLimitFloor = X_gridLimitFloorCurr + offsets[i];
+                X_gridLimitCeiling = X_gridLimitCeilingCurr + offsets[i];
+
                 for (j = 0; j < neighborhoodSize; j++)
                 {
+                    Y_gridLimitFloor = Y_gridLimitFloorCurr + offsets[j];
+                    Y_gridLimitCeiling = Y_gridLimitCeilingCurr + offsets[j];
+
                     for (k = 0; k < neighborhoodSize; k++)
                     {
-                        X_gridLimitFloor = X_gridLimitFloorCurr + offsets[i];
-                        X_gridLimitCeiling = X_gridLimitCeilingCurr + offsets[i];
-
-                        Y_gridLimitFloor = Y_gridLimitFloorCurr + offsets[j];
-                        Y_gridLimitCeiling = Y_gridLimitCeilingCurr + offsets[j];
-
                         Z_gridLimitFloor = Z_gridLimitFloorCurr + offsets[k];
                         Z_gridLimitCeiling = Z_gridLimitCeilingCurr + offsets[k];
 
                         allNeighborKeys[i, j, k] = X_gridLimitFloor + "/" + X_gridLimitCeiling + "," +
                             Y_gridLimitFloor + "/" + Y_gridLimitCeiling + "," +
                             Z_gridLimitFloor + "/" + Z_gridLimitCeiling;
-                        strIndex++;
                     }
                 }
             }
 
             return allNeighborKeys;
         }
+
+
 
         public string[] findAllNeighborKeys(string key, int neighborhoodSize)
         {
@@ -949,14 +948,19 @@ namespace _3DSandbox
             MeshGeometry3D mesh2 = new MeshGeometry3D();
             MeshGeometry3D mesh3 = new MeshGeometry3D();
             MeshGeometry3D mesh4 = new MeshGeometry3D();
+            MeshGeometry3D meshRegionOutline = new MeshGeometry3D();
+
             DiffuseMaterial surface_material1 = new DiffuseMaterial(Brushes.DarkOrange);
             DiffuseMaterial surface_material2 = new DiffuseMaterial(Brushes.Olive);
             DiffuseMaterial surface_material3 = new DiffuseMaterial(Brushes.Blue);
+            DiffuseMaterial surface_material4 = new DiffuseMaterial(Brushes.DarkViolet);
 
             DiffuseMaterial qDiffTransYellow2 =
                    new DiffuseMaterial(new SolidColorBrush(Color.FromArgb(75, 100, 255, 100)));
             SpecularMaterial qSpecTransWhite2 =
                         new SpecularMaterial(new SolidColorBrush(Color.FromArgb(75, 100, 100, 0)), 30.0);
+            SpecularMaterial qSpecTransViolet =
+                        new SpecularMaterial(new SolidColorBrush(Color.FromArgb(75, 121, 38, 165)), 30.0);
             MaterialGroup qOuterMaterial2 = new MaterialGroup();
 
             Cube cubeToHandle;
@@ -976,9 +980,19 @@ namespace _3DSandbox
                         
                         if (triangleToHandle.accessabilityType == TriangleAccesabilityType.CANDIDATE)
                         {
-                            renderViewFunctionalities.AddTriangle(mesh2, triangleToHandle.vertex1.vertexPosition,
-                            triangleToHandle.vertex2.vertexPosition,
-                            triangleToHandle.vertex3.vertexPosition);
+                            if(triangleToHandle.useType == TriangleUseType.REGION_OUTLINE_CANDIDATE)
+                            {
+                                renderViewFunctionalities.AddTriangle(meshRegionOutline, triangleToHandle.vertex1.vertexPosition,
+                                    triangleToHandle.vertex2.vertexPosition,
+                                    triangleToHandle.vertex3.vertexPosition);
+                            } else
+                            {
+                                renderViewFunctionalities.AddTriangle(mesh2, triangleToHandle.vertex1.vertexPosition,
+                                    triangleToHandle.vertex2.vertexPosition,
+                                    triangleToHandle.vertex3.vertexPosition);
+                            }
+
+                            
                         }
                         else if (triangleToHandle.accessabilityType == TriangleAccesabilityType.UNACCESSABLE)
                         {
@@ -1013,16 +1027,20 @@ namespace _3DSandbox
             GeometryModel3D surface_model1 = new GeometryModel3D(mesh1, surface_material1);
             GeometryModel3D surface_model2 = new GeometryModel3D(mesh2, surface_material2);
             GeometryModel3D surface_model3 = new GeometryModel3D(mesh3, surface_material3);
+            GeometryModel3D surfaceRegionOutline = new GeometryModel3D(mesh3, surface_material3);
+
 
             // Make the surface visible from both sides.
             surface_model1.BackMaterial = surface_material1;
             surface_model2.BackMaterial = surface_material2;
             surface_model3.BackMaterial = surface_material3;
+            surfaceRegionOutline.BackMaterial = surface_material4;
 
             // Add the model to the model groups.
             renderViewFunctionalities.MainModel3Dgroup.Children.Add(surface_model1);
             renderViewFunctionalities.MainModel3Dgroup.Children.Add(surface_model2);
             renderViewFunctionalities.MainModel3Dgroup.Children.Add(surface_model3);
+            renderViewFunctionalities.MainModel3Dgroup.Children.Add(surfaceRegionOutline);
         }
         
 
@@ -1148,8 +1166,7 @@ namespace _3DSandbox
             string gridLimitsStrWholes0 = "";
             string gridLimitsStrWholes1 = "";
             string gridLimitsStrWholes2 = "";
-
-            int i = 0;
+            
             Cube cubeToHandle;
             Vector3D normalVectorOfTriangle;
             List<Point3D> singleCubeVertices;
@@ -1161,12 +1178,6 @@ namespace _3DSandbox
 
             foreach (int triangleId in actualMeshTriangleListIndexed.Keys)
             {
-                i++;
-                if (i < 100)
-                {
-                    informationTextBlock.Text += triangleId.ToString() + "\n";
-                }
-
                 normalVectorOfTriangle = actualMeshTriangleNormalVectors[triangleId];
 
                 point0 = actualMeshTriangleList[triangleId][0];
@@ -1204,8 +1215,7 @@ namespace _3DSandbox
                 Y_gridLimitCeiling2 = Math.Ceiling(Y_divided2);
                 Z_gridLimitFloor2 = Math.Floor(Z_divided2);
                 Z_gridLimitCeiling2 = Math.Ceiling(Z_divided2);
-
-
+                
                 gridLimitsStr0 = new string[6];
                 gridLimitsStr0[0] = X_gridLimitFloor0.ToString();
                 gridLimitsStr0[2] = Y_gridLimitFloor0.ToString();
@@ -1239,8 +1249,7 @@ namespace _3DSandbox
 
                 gridLimitsStrWholes2 = gridLimitsStr2[0] + "/" + gridLimitsStr2[1] + "," + gridLimitsStr2[2]
                         + "/" + gridLimitsStr2[3] + "," + gridLimitsStr2[4] + "/" + gridLimitsStr2[5];
-
-
+                
                 if (cubePointCloudVertices.ContainsKey(gridLimitsStrWholes0))
                 {
                     singleCubeVertices = cubePointCloudVertices[gridLimitsStrWholes0];
@@ -2863,6 +2872,7 @@ namespace _3DSandbox
 
                 // If we have at least 3 points (minimum required to generate a plane),
                 // determine the plane of the cube:
+               
                 if (pointCloudVerticesOfCube.Count >= 3)
                 {
                     cubeToHandle = allCubes[cubeId];
@@ -2883,6 +2893,22 @@ namespace _3DSandbox
 
                     //calculatePlaneOfCubeNormalsMerging(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
                 }
+                
+ /*
+                cubeToHandle = allCubes[cubeId];
+
+                // Get the cube delimiters:
+                cubeLimits[0] = cubeToHandle.xFloor;
+                cubeLimits[1] = cubeToHandle.xCeiling;
+                cubeLimits[2] = cubeToHandle.yFloor;
+                cubeLimits[3] = cubeToHandle.yCeiling;
+                cubeLimits[4] = cubeToHandle.zFloor;
+                cubeLimits[5] = cubeToHandle.zCeiling;
+
+                trianglePoints = new Point3D[3];
+
+                calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+*/
 
             }
             
@@ -3113,6 +3139,10 @@ namespace _3DSandbox
                             triangleToHandle = trianglesOfCube[triangleId];
                             triangleToHandle.accessabilityType = TriangleAccesabilityType.CANDIDATE;
                             triangleToHandle.useType = TriangleUseType.CUBE_PLANE_ACTUAL;
+                            if(cubeToHandle.neighbors.Count < 8)
+                            {
+                                triangleToHandle.useType = TriangleUseType.REGION_OUTLINE_CANDIDATE;
+                            }
                         } else
                         {
                             triangleToHandle = trianglesOfCube[triangleId];
@@ -3522,7 +3552,6 @@ namespace _3DSandbox
             Triangle triangleToHandle;
             Cube cubeToHandle = allCubes[cubeId];
             Dictionary<int, Triangle> cubeTriangles = cubeToHandle.triangles;
-            Vector3D normalVertorOfTriangle;
 
             if (numberOfVertices == 3 || numberOfVertices == 6)
             {
