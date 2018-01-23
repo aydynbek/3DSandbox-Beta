@@ -213,7 +213,7 @@
 
         private void ProcessPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
-            kinect3DOperations.processPointCloudMeshIntoCubes();
+            kinect3DOperations.generateCubesWithPointCloudTrianglesMerging();
         }
 
         private void MainViewport_MouseDown(object sender, MouseButtonEventArgs e)

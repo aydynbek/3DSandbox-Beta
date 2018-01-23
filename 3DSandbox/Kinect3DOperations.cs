@@ -174,7 +174,7 @@ namespace _3DSandbox
                     new SpecularMaterial(new SolidColorBrush(Color.FromArgb(75, 255, 255, 0)), 30.0);
         MaterialGroup qOuterMaterial = new MaterialGroup();
 
-        public double acceptableDistance = .75 * 30;
+        public double acceptableDistance = (.75 * 30) * (.75 * 30);
         //public double acceptableDistance = 1.55;
 
         public Dictionary<int, Dictionary<int, int>> indexedPoints =
@@ -1123,11 +1123,138 @@ namespace _3DSandbox
         }
 
         /// <summary>
+        /// This function takes the point cloud mesh triangles, finds the midpoint of the triangle, and assigns that
+        /// triangle to the cube if it's midpoint is inside it. The normals of the triangles are used
+        /// for mathematical analysis of the cubes. Triangle is only added to one cube.
+        /// </summary>
+        public void generateCubesWithPointCloudTrianglesMerging()
+        {
+            double X_divided0 = 0.0;
+            double Y_divided0 = 0.0;
+            double Z_divided0 = 0.0;
+            double X_divided1 = 0.0;
+            double Y_divided1 = 0.0;
+            double Z_divided1 = 0.0;
+            double X_divided2 = 0.0;
+            double Y_divided2 = 0.0;
+            double Z_divided2 = 0.0;
+            double X_dividedMerge = 0.0;
+            double Y_dividedMerge = 0.0;
+            double Z_dividedMerge = 0.0;
+            double X_gridLimitFloor = 0.0;
+            double X_gridLimitCeiling = 0.0;
+            double Y_gridLimitFloor = 0.0;
+            double Y_gridLimitCeiling = 0.0;
+            double Z_gridLimitFloor = 0.0;
+            double Z_gridLimitCeiling = 0.0;
+
+            Point3D point0, point1, point2, pointMerge;
+
+            string[] gridLimitsStr = new string[6];
+
+            string gridLimitsStrWholes = "";
+
+            Cube cubeToHandle;
+            Vector3D normalVectorOfTriangle;
+            List<Point3D> singleCubeVertices;
+
+            if (pointCloudVertices.Count == 0)
+            {
+                pointCloudVertices = depthMasterControl.savedPointCloudList;
+            }
+
+            foreach (int triangleId in actualMeshTriangleListIndexed.Keys)
+            {
+                normalVectorOfTriangle = actualMeshTriangleNormalVectors[triangleId];
+
+                point0 = actualMeshTriangleList[triangleId][0];
+                point1 = actualMeshTriangleList[triangleId][1];
+                point2 = actualMeshTriangleList[triangleId][2];
+
+                pointMerge = new Point3D((point0.X + point1.X + point2.X) / 3,
+                                         (point0.Y + point1.Y + point2.Y) / 3,
+                                         (point0.Z + point1.Z + point2.Z) / 3);
+
+                X_divided0 = point0.X / cubeSize;
+                Y_divided0 = point0.Y / cubeSize;
+                Z_divided0 = point0.Z / cubeSize;
+                X_divided1 = point1.X / cubeSize;
+                Y_divided1 = point1.Y / cubeSize;
+                Z_divided1 = point1.Z / cubeSize;
+                X_divided2 = point2.X / cubeSize;
+                Y_divided2 = point2.Y / cubeSize;
+                Z_divided2 = point2.Z / cubeSize;
+                X_dividedMerge = pointMerge.X / cubeSize;
+                Y_dividedMerge = pointMerge.Y / cubeSize;
+                Z_dividedMerge = pointMerge.Z / cubeSize;
+
+                // Get the cube delimeters of this particular vertex:
+                X_gridLimitFloor = Math.Floor(X_dividedMerge);
+                X_gridLimitCeiling = Math.Ceiling(X_dividedMerge);
+                Y_gridLimitFloor = Math.Floor(Y_dividedMerge);
+                Y_gridLimitCeiling = Math.Ceiling(Y_dividedMerge);
+                Z_gridLimitFloor = Math.Floor(Z_dividedMerge);
+                Z_gridLimitCeiling = Math.Ceiling(Z_dividedMerge);
+
+                gridLimitsStr = new string[6];
+                gridLimitsStr[0] = X_gridLimitFloor.ToString();
+                gridLimitsStr[2] = Y_gridLimitFloor.ToString();
+                gridLimitsStr[4] = Z_gridLimitFloor.ToString();
+                gridLimitsStr[1] = X_gridLimitCeiling.ToString();
+                gridLimitsStr[3] = Y_gridLimitCeiling.ToString();
+                gridLimitsStr[5] = Z_gridLimitCeiling.ToString();
+
+                // Create the key for the cube:
+                gridLimitsStrWholes = gridLimitsStr[0] + "/" + gridLimitsStr[1] + "," + gridLimitsStr[2]
+                        + "/" + gridLimitsStr[3] + "," + gridLimitsStr[4] + "/" + gridLimitsStr[5];
+
+                if (cubePointCloudVertices.ContainsKey(gridLimitsStrWholes))
+                {
+                    singleCubeVertices = cubePointCloudVertices[gridLimitsStrWholes];
+                    singleCubeVertices.Add(pointMerge);
+
+                    cubeToHandle = allCubes[gridLimitsStrWholes];
+
+                    if (!cubeToHandle.actualMeshTriangleNormalVectors.ContainsKey(triangleId))
+                    {
+                        cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                    }
+
+                    if (!cubeToHandle.actualMeshTrianglePoint.ContainsKey(triangleId))
+                    {
+                        cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point0);
+                    }
+                }
+                else
+                {
+                    // Create new cube:
+                    cubeToHandle = new Cube(gridLimitsStrWholes, X_gridLimitFloor, X_gridLimitCeiling,
+                        Y_gridLimitFloor, Y_gridLimitCeiling, Z_gridLimitFloor, Z_gridLimitCeiling);
+
+                    cubeToHandle.actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
+                    cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                    cubeToHandle.actualMeshTrianglePoint = new Dictionary<int, Point3D>();
+                    cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point0);
+
+                    allCubes[gridLimitsStrWholes] = cubeToHandle;
+
+                    singleCubeVertices = new List<Point3D>();
+                    singleCubeVertices.Add(pointMerge);
+
+                    // Associate a new list with a cube:
+                    cubePointCloudVertices[gridLimitsStrWholes] = singleCubeVertices;
+                }
+            }
+        }
+
+
+
+        /// <summary>
         /// This function takes the point cloud mesh and uses the individual triangles to 
         /// create the individual cube structures. The normals of the triangles are used
-        /// for mathematical analysis of the cubes.
+        /// for mathematical analysis of the cubes. Triangle is added to multiple cubes.
         /// </summary>
-        public void processPointCloudMeshIntoCubes()
+        public void generateCubesWithPointCloudTrianglesIndividual()
         {
             double X_divided0 = 0.0;
             double Y_divided0 = 0.0;
@@ -1481,10 +1608,7 @@ namespace _3DSandbox
             Vector3D normalVectorOfTriangle;
 
             createPointCloudActualMeshRealsense();
-            informationTextBlock.Text = indexedPoints.Count + "\n";
-            informationTextBlock.Text += pointCloudIndexed.Count + "\n";
-            int i = 0;
-
+            
             foreach (int rowIndex in indexedPoints.Keys)
             {
                 if (rowIndexCount < (RealsenseHeight - 1))
@@ -1510,24 +1634,18 @@ namespace _3DSandbox
                             x = basePoint.X - downPoint.X;
                             y = basePoint.Y - downPoint.Y;
                             z = basePoint.Z - downPoint.Z;
-                            distanceDown = Math.Sqrt(x * x + y * y + z * z);
+                            distanceDown = x * x + y * y + z * z;
 
                             x = basePoint.X - diagonalPoint.X;
                             y = basePoint.Y - diagonalPoint.Y;
                             z = basePoint.Z - diagonalPoint.Z;
-                            distanceDiagonal = Math.Sqrt(x * x + y * y + z * z);
+                            distanceDiagonal = x * x + y * y + z * z;
 
                             x = basePoint.X - rightPoint.X;
                             y = basePoint.Y - rightPoint.Y;
                             z = basePoint.Z - rightPoint.Z;
-                            distanceRight = Math.Sqrt(x * x + y * y + z * z);
-
-                            if(i < 100 && rowIndex == 200)
-                            {
-                                informationTextBlock.Text += distanceDown.ToString() + "\n";
-                                i++;
-                            }
-
+                            distanceRight = x * x + y * y + z * z;
+                            
                             if (distanceDown < acceptableDistance && distanceDiagonal < acceptableDistance)
                             {
                                 trianglePointsArray = new Point3D[3];
@@ -1561,9 +1679,6 @@ namespace _3DSandbox
                 
                 rowIndexCount++;
             }
-
-            informationTextBlock.Text += "SEEEE " + actualMeshTriangleList.Count + "\n";
-            informationTextBlock.Text += "SEEEE1 " + actualMeshTriangleListIndexed.Count + "\n";
         }
 
 
