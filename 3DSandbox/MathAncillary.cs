@@ -54,6 +54,23 @@ namespace _3DSandbox
             Vector3D vector1 = new Vector3D(point2.X - point1.X,
                                             point2.Y - point1.Y,
                                             point2.Z - point1.Z);
+
+            Vector3D vector2 = new Vector3D(point3.X - point1.X,
+                                            point3.Y - point1.Y,
+                                            point3.Z - point1.Z);
+
+            normalVector = Vector3D.CrossProduct(vector1, vector2);
+            normalVector.Normalize();
+
+            return normalVector;
+        }
+
+        public static Vector3D getNormalVectorOfTriangle2(Point3D point1, Point3D point2, Point3D point3)
+        {
+            Vector3D normalVector = new Vector3D();
+            Vector3D vector1 = new Vector3D(point2.X - point1.X,
+                                            point2.Y - point1.Y,
+                                            point2.Z - point1.Z);
             vector1 = Vector3D.Divide(vector1, vector1.Length);
 
             Vector3D vector2 = new Vector3D(point3.X - point1.X,

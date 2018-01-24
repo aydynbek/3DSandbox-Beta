@@ -135,6 +135,17 @@
             kinect3DOperations.getPointCloudOfDepthData();
         }
 
+        private void CreatePointCloudMeshButton_Click(object sender, RoutedEventArgs e)
+        {
+            //kinect3DOperations.createPointCloudMesh();
+            kinect3DOperations.createPointCloudMeshRealsense();
+        }
+
+        private void ProcessPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
+        {
+            kinect3DOperations.generateCubesWithPointCloudTrianglesMerging();
+        }
+
         private void ShowAccessabilityMapButton_Click(object sender, RoutedEventArgs e)
         {
             dataDirectoryPath = dataDirectoryPathTextBox.Text;
@@ -200,21 +211,14 @@
             //kinect3DOperations.savePointCloudInFile();
         }
 
-        private void CreatePointCloudMeshButton_Click(object sender, RoutedEventArgs e)
-        {
-            //kinect3DOperations.createPointCloudMesh();
-            kinect3DOperations.createPointCloudMeshRealsense();
-        }
+        
 
         private void RenderPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
             kinect3DOperations.renderPointCloudMesh();
         }
 
-        private void ProcessPointCloudMeshButton_Click(object sender, RoutedEventArgs e)
-        {
-            kinect3DOperations.generateCubesWithPointCloudTrianglesMerging();
-        }
+        
 
         private void MainViewport_MouseDown(object sender, MouseButtonEventArgs e)
         {
