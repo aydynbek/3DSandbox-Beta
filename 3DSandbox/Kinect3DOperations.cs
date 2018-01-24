@@ -1215,14 +1215,14 @@ namespace _3DSandbox
 
                     cubeToHandle = allCubes[gridLimitsStrWholes];
 
-                    if (!cubeToHandle.actualMeshTriangleNormalVectors.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleNormalVectors.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                        cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
                     }
 
-                    if (!cubeToHandle.actualMeshTrianglePoint.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleMergePoints.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point0);
+                        cubeToHandle.triangleMergePoints.Add(triangleId, pointMerge);
                     }
                 }
                 else
@@ -1231,11 +1231,13 @@ namespace _3DSandbox
                     cubeToHandle = new Cube(gridLimitsStrWholes, X_gridLimitFloor, X_gridLimitCeiling,
                         Y_gridLimitFloor, Y_gridLimitCeiling, Z_gridLimitFloor, Z_gridLimitCeiling);
 
-                    cubeToHandle.actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
-                    cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
-                    cubeToHandle.actualMeshTrianglePoint = new Dictionary<int, Point3D>();
-                    cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point0);
+                    // Add necessary triangle information:
+                    cubeToHandle.triangleNormalVectors = new Dictionary<int, Vector3D>();
+                    cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                    cubeToHandle.triangleMergePoints = new Dictionary<int, Point3D>();
+                    cubeToHandle.triangleMergePoints.Add(triangleId, pointMerge);
 
+                    // Assging to the global list of cubes:
                     allCubes[gridLimitsStrWholes] = cubeToHandle;
 
                     singleCubeVertices = new List<Point3D>();
@@ -1384,14 +1386,14 @@ namespace _3DSandbox
 
                     cubeToHandle = allCubes[gridLimitsStrWholes0];
 
-                    if (!cubeToHandle.actualMeshTriangleNormalVectors.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleNormalVectors.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                        cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
                     }
                     
-                    if (!cubeToHandle.actualMeshTrianglePoint.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleMergePoints.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point0);
+                        cubeToHandle.triangleMergePoints.Add(triangleId, point0);
                     }
                 }
                 else
@@ -1400,10 +1402,10 @@ namespace _3DSandbox
                     cubeToHandle = new Cube(gridLimitsStrWholes0, X_gridLimitFloor0, X_gridLimitCeiling0,
                         Y_gridLimitFloor0, Y_gridLimitCeiling0, Z_gridLimitFloor0, Z_gridLimitCeiling0);
                     
-                    cubeToHandle.actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
-                    cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
-                    cubeToHandle.actualMeshTrianglePoint = new Dictionary<int, Point3D>();
-                    cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point0);
+                    cubeToHandle.triangleNormalVectors = new Dictionary<int, Vector3D>();
+                    cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                    cubeToHandle.triangleMergePoints = new Dictionary<int, Point3D>();
+                    cubeToHandle.triangleMergePoints.Add(triangleId, point0);
 
                     allCubes[gridLimitsStrWholes0] = cubeToHandle;
 
@@ -1421,13 +1423,13 @@ namespace _3DSandbox
                     singleCubeVertices.Add(point1);
 
                     cubeToHandle = allCubes[gridLimitsStrWholes1];
-                    if (!cubeToHandle.actualMeshTriangleNormalVectors.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleNormalVectors.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                        cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
                     }
-                    if (!cubeToHandle.actualMeshTrianglePoint.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleMergePoints.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point1);
+                        cubeToHandle.triangleMergePoints.Add(triangleId, point1);
                     }
                 }
                 else
@@ -1436,10 +1438,10 @@ namespace _3DSandbox
                     cubeToHandle = new Cube(gridLimitsStrWholes1, X_gridLimitFloor1, X_gridLimitCeiling1,
                         Y_gridLimitFloor1, Y_gridLimitCeiling1, Z_gridLimitFloor1, Z_gridLimitCeiling1);
 
-                    cubeToHandle.actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
-                    cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
-                    cubeToHandle.actualMeshTrianglePoint = new Dictionary<int, Point3D>();
-                    cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point1);
+                    cubeToHandle.triangleNormalVectors = new Dictionary<int, Vector3D>();
+                    cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                    cubeToHandle.triangleMergePoints = new Dictionary<int, Point3D>();
+                    cubeToHandle.triangleMergePoints.Add(triangleId, point1);
 
                     allCubes[gridLimitsStrWholes1] = cubeToHandle;
 
@@ -1456,13 +1458,13 @@ namespace _3DSandbox
                     singleCubeVertices.Add(point2);
 
                     cubeToHandle = allCubes[gridLimitsStrWholes2];
-                    if (!cubeToHandle.actualMeshTriangleNormalVectors.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleNormalVectors.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                        cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
                     }
-                    if (!cubeToHandle.actualMeshTrianglePoint.ContainsKey(triangleId))
+                    if (!cubeToHandle.triangleMergePoints.ContainsKey(triangleId))
                     {
-                        cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point2);
+                        cubeToHandle.triangleMergePoints.Add(triangleId, point2);
                     }
                 }
                 else
@@ -1471,10 +1473,10 @@ namespace _3DSandbox
                     cubeToHandle = new Cube(gridLimitsStrWholes2, X_gridLimitFloor2, X_gridLimitCeiling2,
                         Y_gridLimitFloor2, Y_gridLimitCeiling2, Z_gridLimitFloor2, Z_gridLimitCeiling2);
 
-                    cubeToHandle.actualMeshTriangleNormalVectors = new Dictionary<int, Vector3D>();
-                    cubeToHandle.actualMeshTriangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
-                    cubeToHandle.actualMeshTrianglePoint = new Dictionary<int, Point3D>();
-                    cubeToHandle.actualMeshTrianglePoint.Add(triangleId, point2);
+                    cubeToHandle.triangleNormalVectors = new Dictionary<int, Vector3D>();
+                    cubeToHandle.triangleNormalVectors.Add(triangleId, normalVectorOfTriangle);
+                    cubeToHandle.triangleMergePoints = new Dictionary<int, Point3D>();
+                    cubeToHandle.triangleMergePoints.Add(triangleId, point2);
 
                     allCubes[gridLimitsStrWholes2] = cubeToHandle;
 
@@ -2472,7 +2474,7 @@ namespace _3DSandbox
             Vector3D normalVector = new Vector3D();
             double contstantOfPlaneEq = 0;
 
-            Point3D point1 = new Point3D();
+            Point3D allTrianglesMergePoint = new Point3D(0,0,0);
             cubeToHandle.planeTrianglePoints = new Point3D[1];
 
             cubeLimits[0] = cubeToHandle.xFloor;
@@ -2481,27 +2483,34 @@ namespace _3DSandbox
             cubeLimits[3] = cubeToHandle.yCeiling;
             cubeLimits[4] = cubeToHandle.zFloor;
             cubeLimits[5] = cubeToHandle.zCeiling;
-
-            foreach(int triangleId in cubeToHandle.actualMeshTriangleNormalVectors.Keys)
+            
+            foreach(int triangleId in cubeToHandle.triangleNormalVectors.Keys)
             {
-                normalVector.X += cubeToHandle.actualMeshTriangleNormalVectors[triangleId].X;
-                normalVector.Y += cubeToHandle.actualMeshTriangleNormalVectors[triangleId].Y;
-                normalVector.Z += cubeToHandle.actualMeshTriangleNormalVectors[triangleId].Z;
+                normalVector.X += cubeToHandle.triangleNormalVectors[triangleId].X;
+                normalVector.Y += cubeToHandle.triangleNormalVectors[triangleId].Y;
+                normalVector.Z += cubeToHandle.triangleNormalVectors[triangleId].Z;
 
-                point1 = cubeToHandle.actualMeshTrianglePoint[triangleId];
+                allTrianglesMergePoint.X = cubeToHandle.triangleMergePoints[triangleId].X;
+                allTrianglesMergePoint.Y = cubeToHandle.triangleMergePoints[triangleId].Y;
+                allTrianglesMergePoint.Z = cubeToHandle.triangleMergePoints[triangleId].Z;
             }
 
+            allTrianglesMergePoint.X /= cubeToHandle.triangleMergePoints.Count;
+            allTrianglesMergePoint.Y /= cubeToHandle.triangleMergePoints.Count;
+            allTrianglesMergePoint.Z /= cubeToHandle.triangleMergePoints.Count;
+
             normalVector = Vector3D.Divide(normalVector,
-                cubeToHandle.actualMeshTriangleNormalVectors.Keys.Count);
+                cubeToHandle.triangleNormalVectors.Keys.Count);
 
             // Lets get the constant part of the equation of plane:
-            contstantOfPlaneEq = point1.X * normalVector.X + point1.Y * normalVector.Y
-                + point1.Z * normalVector.Z;
+            contstantOfPlaneEq = allTrianglesMergePoint.X * normalVector.X + allTrianglesMergePoint.Y * normalVector.Y
+                + allTrianglesMergePoint.Z * normalVector.Z;
 
             cubeToHandle.planeEquationConstant = contstantOfPlaneEq;
 
             cubeToHandle.planeEquationNormalVector = normalVector;
             cubeToHandle.planeEquationNormalVector.Normalize();
+
             // Sometimes the equation of the plane comes with 2 coefficients that are 0;
             // These are the planes that have their normal vectors point in the direction
             // of an axis. This case creates problems when we try to calculate cross sections.
@@ -2529,8 +2538,8 @@ namespace _3DSandbox
                 normalVector.Y += 0.0001;
                 normalVector.Z += 0.0001;
 
-                contstantOfPlaneEq = point1.X * normalVector.X + point1.Y * normalVector.Y
-                + point1.Z * normalVector.Z;
+                contstantOfPlaneEq = allTrianglesMergePoint.X * normalVector.X + allTrianglesMergePoint.Y * normalVector.Y
+                + allTrianglesMergePoint.Z * normalVector.Z;
             }
 
             // Now that we have the cube plane's equation, lets see which of the cubes edges this plane will 
@@ -2955,13 +2964,91 @@ namespace _3DSandbox
                     normalVector.X, normalVector.Y, normalVector.Z, constantOfPlaneEq);
         }
 
+        /// <summary>
+        /// Create a navigation mesh by combining trianles that occupy a single cube. Plane of cube is 
+        /// created and neighbors of the cube are assigned.
+        /// </summary>
+        public void createNavigationMeshMergingTriangles()
+        {
+            Dictionary<int, Point3D> containedGridVertices = new Dictionary<int, Point3D>();
+            var allCubeIds = cubePointCloudVertices.Keys;
+            Point3D[] trianglePoints = new Point3D[3];
+            int facedVerticesIndex = 0;
+            Cube cubeToHandle;
+            List<Point3D> pointCloudVerticesOfCube;
+            string[,,] neighbors;
+            int i = 0, j = 0, k = 0;
+            Dictionary<string, Cube> listOfNeighbors;
+            Dictionary<ConnectOfCube, string> listOfNeighborsConnection;
+            Cube neighborCubeToHandle;
+            string neighborCubeId;
+
+            int neighborhoodSize = 3;
+
+            // Set the cube size according to the info on the textBox:
+            cubeSize = Double.Parse(MainWindow.cubeStructureSize);
+
+            foreach (string cubeId in allCubeIds)
+            {
+                // Get the list of all raw point cloud vertices of the cube:
+                pointCloudVerticesOfCube = cubePointCloudVertices[cubeId];
+                cubeToHandle = allCubes[cubeId];
+                trianglePoints = new Point3D[3];
+
+                calculatePlaneOfCube(cubeToHandle, ref facedVerticesIndex, pointCloudVerticesOfCube);
+            }
+
+            // Find the neighbors of the cube:
+            foreach (string cubeId in allCubeIds)
+            {
+                cubeToHandle = allCubes[cubeId];
+
+                if (cubeToHandle.hasPlane)
+                {
+                    neighbors = findAllNeighborKeys3DArray(cubeToHandle, neighborhoodSize);
+                    listOfNeighborsConnection = new Dictionary<ConnectOfCube, string>();
+                    listOfNeighbors = new Dictionary<string, Cube>();
+
+                    // Search through all possible neighbors:
+                    for (i = 0; i < neighborhoodSize; i++)
+                    {
+                        for (j = 0; j < neighborhoodSize; j++)
+                        {
+                            for (k = 0; k < neighborhoodSize; k++)
+                            {
+                                neighborCubeId = neighbors[i, j, k];
+
+                                if (allCubes.ContainsKey(neighborCubeId))
+                                {
+                                    // Neighbor found:
+                                    neighborCubeToHandle = allCubes[neighborCubeId];
+                                    if (neighborCubeToHandle.hasPlane)
+                                    {
+                                        listOfNeighbors.Add(neighborCubeId, neighborCubeToHandle);
+                                        listOfNeighborsConnection.Add(connectionToNeighboringCubes[i, j, k],
+                                            neighborCubeId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    cubeToHandle.neighbors = listOfNeighbors;
+                    cubeToHandle.neighborsConnectionType = listOfNeighborsConnection;
+                    cubeNeighbors.Add(cubeId, listOfNeighborsConnection);
+                }
+            }
+        }
+
+
+
 
         /// <summary>
         /// Create a mesh that is simplified from the vertex grid that we have populated
         /// before. Planes are created at each grid, which are estimated based on the different
         /// vertices present. These planes are then connected to create a mesh.
         /// </summary>
-        public void createSimplifiedMeshFromGridActual()
+        public void createNavigationMesh()
         {
             Dictionary<int, Point3D> containedGridVertices = new Dictionary<int, Point3D>();
             var allCubeIds = cubePointCloudVertices.Keys;
@@ -3206,7 +3293,7 @@ namespace _3DSandbox
             {
                 cubeToHandle = allCubes[cubeId];
                 
-                convertPolygonIntoTriangles( new Dictionary<int, Vertex>(cubeToHandle.vertices),
+                convertPolygonIntoTriangles(new Dictionary<int, Vertex>(cubeToHandle.vertices),
                     cubeToHandle.vertices.Count, ref indexOfTriangles, cubeId);
             }
         }

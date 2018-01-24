@@ -18,6 +18,9 @@ namespace _3DSandbox
     public enum TriangleUseType { CUBE_PLANE_ACTUAL, CUBE_PLANE_CONNECTOR, REGION_OUTLINE_CANDIDATE }
     public enum TriangleAccesabilityType { CANDIDATE, UNACCESSABLE, ACCESSABLE }
 
+    public enum CubeUseType { CUBE_PLANE_ACTUAL, CUBE_PLANE_CONNECTOR, REGION_OUTLINE_CANDIDATE }
+    public enum CubeAccesabilityType { CANDIDATE, UNACCESSABLE, ACCESSABLE }
+
     public class Vertex
     {
         public int vertexId;
@@ -96,16 +99,25 @@ namespace _3DSandbox
             false, false, false, false, false, false};
 
         public Vector3D averageNormalVector;
-        
+
+        CubeUseType useType;
+        CubeAccesabilityType accessabilityType;
+
         public Dictionary<int, Vertex> vertices;
         public Dictionary<EdgesOfCube, Vertex> edges;
         public Dictionary<int, Triangle> triangles;
         public Dictionary<string, Cube> neighbors;
         public Dictionary<ConnectOfCube, string> neighborsConnectionType;
 
-        /*---------*/
-        public Dictionary<int, Vector3D> actualMeshTriangleNormalVectors;
-        public Dictionary<int, Point3D> actualMeshTrianglePoint;
+        /// <summary>
+        /// List of normal vectors for all triangles occupying the cube.
+        /// </summary>
+        public Dictionary<int, Vector3D> triangleNormalVectors;
+
+        /// <summary>
+        /// List of all triangles midpoints which are determined by merging the 3 points.
+        /// </summary>
+        public Dictionary<int, Point3D> triangleMergePoints;
 
         public Cube(string cubeId, double xFloor, double xCeiling, double yFloor, double yCeiling,
                     double zFloor, double zCeiling)
