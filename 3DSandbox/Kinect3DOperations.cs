@@ -104,7 +104,7 @@ namespace _3DSandbox
         public double cubeSize = .64;
 
         public double maximumAllowableVertexHeightDifference = 0.29;
-        public double maximumAngleAllowed = 35;
+        public double maximumAngleAllowed = 42.5;
         //public double maximumAngleAllowed = 12.5;
         public double badAngle = 80;
 
@@ -998,28 +998,24 @@ namespace _3DSandbox
                     {
                         triangleToHandle = cubeToHandle.triangles[triangleId];
                         
-                        if (cubeToHandle.accessabilityType == CubeAccesabilityType.CANDIDATE)
+                        if (cubeToHandle.useType == CubeUseType.REGION_OUTLINE)
                         {
                             accessibleCount++;
-                            if (cubeToHandle.useType == CubeUseType.REGION_OUTLINE_CANDIDATE)
-                            {
-                                renderViewFunctionalities.AddTriangle(meshRegionOutline, triangleToHandle.vertex1.vertexPosition,
-                                    triangleToHandle.vertex2.vertexPosition,
-                                    triangleToHandle.vertex3.vertexPosition);
-                            } else
-                            {
-                                renderViewFunctionalities.AddTriangle(mesh2, triangleToHandle.vertex1.vertexPosition,
-                                    triangleToHandle.vertex2.vertexPosition,
-                                    triangleToHandle.vertex3.vertexPosition);
-                            }
-                            
-                        }
-                        else if (cubeToHandle.accessabilityType == CubeAccesabilityType.UNACCESSABLE)
+                            renderViewFunctionalities.AddTriangle(meshRegionOutline, triangleToHandle.vertex1.vertexPosition,
+                                triangleToHandle.vertex2.vertexPosition,
+                                triangleToHandle.vertex3.vertexPosition);
+                        } else if(cubeToHandle.useType == CubeUseType.REGION_NONE)
                         {
                             unaccessibleCount++;
                             renderViewFunctionalities.AddTriangle(mesh1, triangleToHandle.vertex1.vertexPosition,
                             triangleToHandle.vertex2.vertexPosition,
                             triangleToHandle.vertex3.vertexPosition);
+                        } else 
+                        {
+                            accessibleCount++;
+                            renderViewFunctionalities.AddTriangle(mesh2, triangleToHandle.vertex1.vertexPosition,
+                                triangleToHandle.vertex2.vertexPosition,
+                                triangleToHandle.vertex3.vertexPosition);
                         }
                     }
                 } else
@@ -3367,6 +3363,7 @@ namespace _3DSandbox
             Cube cubeToHandle, neighborCubeToHandle;
             Vector3D  verticalVector = new Vector3D(0,1,0);
 
+            int accessableCubes = 0;
             foreach (string cubeId in allCubes.Keys)
             {
                 cubeToHandle = allCubes[cubeId];
@@ -3379,37 +3376,58 @@ namespace _3DSandbox
                             Vector3D.Multiply(cubeToHandle.cubeNormalVector, -1)) < maximumAngleAllowed)
                     {
                         cubeToHandle.accessabilityType = CubeAccesabilityType.CANDIDATE;
-                        cubeToHandle.useType = CubeUseType.CUBE_PLANE_ACTUAL;
+                        cubeToHandle.useType = CubeUseType.REGION_FILL;
+                        accessableCubes++;
                     } else
                     {
                         cubeToHandle.accessabilityType = CubeAccesabilityType.UNACCESSABLE;
-                        cubeToHandle.useType = CubeUseType.CUBE_PLANE_ACTUAL;
+                        cubeToHandle.useType = CubeUseType.REGION_NONE;
                     }
                 }
             }
 
-            int accessableCount = 0;
+            informationTextBlock.Text += "Accessable Cubes: " + accessableCubes + "\n";
 
+            // Find region outline candidates:
             foreach (string cubeId in allCubes.Keys)
             {
-                accessableCount = 0;
                 cubeToHandle = allCubes[cubeId];
 
-                foreach(string neighborId in cubeToHandle.neighbors.Keys)
+                if(cubeToHandle.useType == CubeUseType.REGION_FILL)
                 {
-                    neighborCubeToHandle = cubeToHandle.neighbors[neighborId];
-                    if (neighborCubeToHandle.accessabilityType == CubeAccesabilityType.UNACCESSABLE)
+                    foreach (string neighborId in cubeToHandle.neighbors.Keys)
                     {
-                        accessableCount++;
-                        cubeToHandle.useType = CubeUseType.REGION_OUTLINE_CANDIDATE;
+                        neighborCubeToHandle = cubeToHandle.neighbors[neighborId];
+                        if (neighborCubeToHandle.accessabilityType == CubeAccesabilityType.UNACCESSABLE)
+                        {
+                            cubeToHandle.useType = CubeUseType.REGION_OUTLINE_CANDIDATE;
+                            break;
+                        }
                     }
                 }
+            }
 
-                if(accessableCount < 8)
+            int filledCount = 0;
+
+            // Find actual region outlines:
+            foreach (string cubeId in allCubes.Keys)
+            {
+                filledCount = 0;
+                cubeToHandle = allCubes[cubeId];
+
+                if (cubeToHandle.useType == CubeUseType.REGION_OUTLINE_CANDIDATE)
                 {
-                   // cubeToHandle.useType = CubeUseType.REGION_OUTLINE_CANDIDATE;
+                    foreach (string neighborId in cubeToHandle.neighbors.Keys)
+                    {
+                        neighborCubeToHandle = cubeToHandle.neighbors[neighborId];
+                        if (neighborCubeToHandle.useType == CubeUseType.REGION_FILL)
+                        {
+                            filledCount++;
+                            cubeToHandle.useType = CubeUseType.REGION_OUTLINE;
+                            break;
+                        }
+                    }
                 }
-                
             }
         }
         

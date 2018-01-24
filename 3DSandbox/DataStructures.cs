@@ -18,7 +18,7 @@ namespace _3DSandbox
     public enum TriangleUseType { CUBE_PLANE_ACTUAL, CUBE_PLANE_CONNECTOR, REGION_OUTLINE_CANDIDATE }
     public enum TriangleAccesabilityType { CANDIDATE, UNACCESSABLE, ACCESSABLE }
 
-    public enum CubeUseType { CUBE_PLANE_ACTUAL, CUBE_PLANE_CONNECTOR, REGION_OUTLINE_CANDIDATE }
+    public enum CubeUseType { CUBE_PLANE_ACTUAL, CUBE_PLANE_CONNECTOR, REGION_OUTLINE_CANDIDATE, REGION_OUTLINE, REGION_FILL, REGION_NONE }
     public enum CubeAccesabilityType { CANDIDATE, UNACCESSABLE, ACCESSABLE }
 
     public class Vertex
