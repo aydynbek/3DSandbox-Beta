@@ -180,7 +180,7 @@ namespace _3DSandbox
         public Dictionary<int, Dictionary<int, int>> indexedPoints =
                new Dictionary<int, Dictionary<int, int>>();
 
-        public Dictionary<int, Point3D[]> pointCloudTriangleList = new Dictionary<int, Point3D[]>();
+        public Dictionary<int, Triangle> pointCloudTriangleList = new Dictionary<int, Triangle>();
         public Dictionary<int, Vector3D> pointCloudTriangleNormalVectors = new Dictionary<int, Vector3D>();
         public Dictionary<int, int[]> pointCloudTriangleListIndexed = new Dictionary<int, int[]>();
 
@@ -978,9 +978,9 @@ namespace _3DSandbox
                     {
                         triangleToHandle = cubeToHandle.triangles[triangleId];
                         
-                        if (triangleToHandle.accessabilityType == TriangleAccesabilityType.CANDIDATE)
+                        if (cubeToHandle.accessabilityType == CubeAccesabilityType.CANDIDATE)
                         {
-                            if(triangleToHandle.useType == TriangleUseType.REGION_OUTLINE_CANDIDATE)
+                            if(cubeToHandle.useType == CubeUseType.REGION_OUTLINE_CANDIDATE)
                             {
                                 renderViewFunctionalities.AddTriangle(meshRegionOutline, triangleToHandle.vertex1.vertexPosition,
                                     triangleToHandle.vertex2.vertexPosition,
@@ -993,7 +993,7 @@ namespace _3DSandbox
                             }
                             
                         }
-                        else if (triangleToHandle.accessabilityType == TriangleAccesabilityType.UNACCESSABLE)
+                        else if (cubeToHandle.accessabilityType == CubeAccesabilityType.UNACCESSABLE)
                         {
                             renderViewFunctionalities.AddTriangle(mesh1, triangleToHandle.vertex1.vertexPosition,
                             triangleToHandle.vertex2.vertexPosition,
@@ -1154,6 +1154,7 @@ namespace _3DSandbox
             string gridLimitsStrWholes = "";
 
             Cube cubeToHandle;
+            Triangle triangleAtIndex;
             Vector3D normalVectorOfTriangle;
             List<Point3D> singleCubeVertices;
 
@@ -1165,24 +1166,15 @@ namespace _3DSandbox
             foreach (int triangleId in pointCloudTriangleListIndexed.Keys)
             {
                 normalVectorOfTriangle = pointCloudTriangleNormalVectors[triangleId];
-
-                point0 = pointCloudTriangleList[triangleId][0];
-                point1 = pointCloudTriangleList[triangleId][1];
-                point2 = pointCloudTriangleList[triangleId][2];
-
-                pointMerge = new Point3D((point0.X + point1.X + point2.X) / 3,
-                                         (point0.Y + point1.Y + point2.Y) / 3,
-                                         (point0.Z + point1.Z + point2.Z) / 3);
-
-                X_divided0 = point0.X / cubeSize;
-                Y_divided0 = point0.Y / cubeSize;
-                Z_divided0 = point0.Z / cubeSize;
-                X_divided1 = point1.X / cubeSize;
-                Y_divided1 = point1.Y / cubeSize;
-                Z_divided1 = point1.Z / cubeSize;
-                X_divided2 = point2.X / cubeSize;
-                Y_divided2 = point2.Y / cubeSize;
-                Z_divided2 = point2.Z / cubeSize;
+                triangleAtIndex = pointCloudTriangleList[triangleId];
+                
+                pointMerge = new Point3D((triangleAtIndex.vertex1.vertexPosition.X + triangleAtIndex.vertex2.vertexPosition.X +
+                    triangleAtIndex.vertex3.vertexPosition.X) / 3,
+                    (triangleAtIndex.vertex1.vertexPosition.Y + triangleAtIndex.vertex2.vertexPosition.Y +
+                    triangleAtIndex.vertex3.vertexPosition.Y) / 3,
+                    (triangleAtIndex.vertex1.vertexPosition.Z + triangleAtIndex.vertex2.vertexPosition.Z + 
+                    triangleAtIndex.vertex3.vertexPosition.Z) / 3);
+                
                 X_dividedMerge = pointMerge.X / cubeSize;
                 Y_dividedMerge = pointMerge.Y / cubeSize;
                 Z_dividedMerge = pointMerge.Z / cubeSize;
@@ -1288,6 +1280,8 @@ namespace _3DSandbox
 
             Point3D point0, point1, point2;
 
+            Triangle triangleAtIndex;
+
             string[] gridLimitsStr0 = new string[6];
             string[] gridLimitsStr1 = new string[6];
             string[] gridLimitsStr2 = new string[6];
@@ -1308,10 +1302,11 @@ namespace _3DSandbox
             foreach (int triangleId in pointCloudTriangleListIndexed.Keys)
             {
                 normalVectorOfTriangle = pointCloudTriangleNormalVectors[triangleId];
+                triangleAtIndex = pointCloudTriangleList[triangleId];
 
-                point0 = pointCloudTriangleList[triangleId][0];
-                point1 = pointCloudTriangleList[triangleId][1];
-                point2 = pointCloudTriangleList[triangleId][2];
+                point0 = triangleAtIndex.vertex1.vertexPosition;
+                point1 = triangleAtIndex.vertex2.vertexPosition;
+                point2 = triangleAtIndex.vertex3.vertexPosition;
 
                 X_divided0 = point0.X / cubeSize;
                 Y_divided0 = point0.Y / cubeSize;
@@ -1493,14 +1488,15 @@ namespace _3DSandbox
         {
             MeshGeometry3D mesh1 = new MeshGeometry3D();
             DiffuseMaterial surface_material1 = new DiffuseMaterial(Brushes.DarkOrange);
-            Point3D[] triangleArray;
+            Triangle triangleToRender;
+
             foreach (int triangleId in pointCloudTriangleList.Keys)
             {
-                triangleArray = pointCloudTriangleList[triangleId];
+                triangleToRender = pointCloudTriangleList[triangleId];
                 renderViewFunctionalities.AddTriangle(mesh1,
-                            triangleArray[0],
-                            triangleArray[1],
-                            triangleArray[2]);
+                            triangleToRender.vertex1.vertexPosition,
+                            triangleToRender.vertex2.vertexPosition,
+                            triangleToRender.vertex3.vertexPosition);
             }
 
             GeometryModel3D surface_model1 = new GeometryModel3D(mesh1, surface_material1);
@@ -1659,7 +1655,8 @@ namespace _3DSandbox
                                     trianglePointsArray[1], trianglePointsArray[2]);
                                 pointCloudTriangleNormalVectors.Add(triangleIndex, normalVectorOfTriangle);
                                 pointCloudTriangleListIndexed.Add(triangleIndex, new int[3] { basePointId, downPointId, diagonalPointId });
-                                pointCloudTriangleList.Add(triangleIndex++, trianglePointsArray);
+                                pointCloudTriangleList.Add(triangleIndex, new Triangle(triangleIndex, trianglePointsArray));
+                                triangleIndex++;
                             }
 
                             if (distanceRight < acceptableDistance && distanceDiagonal < acceptableDistance)
@@ -1673,7 +1670,8 @@ namespace _3DSandbox
                                    trianglePointsArray[1], trianglePointsArray[2]);
                                 pointCloudTriangleNormalVectors.Add(triangleIndex, normalVectorOfTriangle);
                                 pointCloudTriangleListIndexed.Add(triangleIndex, new int[3] { basePointId, rightPointId, diagonalPointId });
-                                pointCloudTriangleList.Add(triangleIndex++, trianglePointsArray);
+                                pointCloudTriangleList.Add(triangleIndex, new Triangle(triangleIndex, trianglePointsArray));
+                                triangleIndex++;
                             }
                         }
                     }
@@ -1753,7 +1751,8 @@ namespace _3DSandbox
                                     trianglePointsArray[1], trianglePointsArray[2]);
                                 pointCloudTriangleNormalVectors.Add(triangleIndex, normalVectorOfTriangle);
                                 pointCloudTriangleListIndexed.Add(triangleIndex, new int[3] { basePointId, downPointId, diagonalPointId });
-                                pointCloudTriangleList.Add(triangleIndex++, trianglePointsArray);
+                                pointCloudTriangleList.Add(triangleIndex, new Triangle(triangleIndex, trianglePointsArray));
+                                triangleIndex++;
                             }
 
                             if (distanceRight < acceptableDistance && distanceDiagonal < acceptableDistance)
@@ -1767,7 +1766,8 @@ namespace _3DSandbox
                                    trianglePointsArray[1], trianglePointsArray[2]);
                                 pointCloudTriangleNormalVectors.Add(triangleIndex, normalVectorOfTriangle);
                                 pointCloudTriangleListIndexed.Add(triangleIndex, new int[3] { basePointId, rightPointId, diagonalPointId });
-                                pointCloudTriangleList.Add(triangleIndex++, trianglePointsArray);
+                                pointCloudTriangleList.Add(triangleIndex, new Triangle(triangleIndex, trianglePointsArray));
+                                triangleIndex++;
                             }
                         }
                     }

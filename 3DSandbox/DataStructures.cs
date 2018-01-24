@@ -64,6 +64,24 @@ namespace _3DSandbox
             this.vertex3 = vertex3;
         }
 
+        public Triangle(int id, Point3D point1, Point3D point2, Point3D point3)
+        {
+            triangleId = id;
+
+            this.vertex1 = new Vertex(1, point1);
+            this.vertex2 = new Vertex(2, point2);
+            this.vertex3 = new Vertex(3, point3);
+        }
+
+        public Triangle(int id, Point3D[] points)
+        {
+            triangleId = id;
+
+            this.vertex1 = new Vertex(1, points[0]);
+            this.vertex2 = new Vertex(2, points[1]);
+            this.vertex3 = new Vertex(3, points[2]);
+        }
+
         public override string ToString()
         {
             return "Id: " + triangleId.ToString() + "\n"

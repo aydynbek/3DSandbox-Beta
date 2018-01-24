@@ -144,7 +144,7 @@
             //kinect3DOperations.createSimplifiedMeshFromGrid();
             //kinect3DOperations.connectAdjacentPlanes2();
 
-            kinect3DOperations.createTrianglesOfCubePlanes();
+            //kinect3DOperations.createTrianglesOfCubePlanes();
             kinect3DOperations.labelAccessibleCubes();
             kinect3DOperations.renderTrianglePlanes();
         }
