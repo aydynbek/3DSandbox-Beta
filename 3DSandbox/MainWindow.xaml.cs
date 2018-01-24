@@ -130,11 +130,6 @@
             kinect3DOperations.extractSavedPointCloud();
         }
         
-        private void ExtractRawDepthFromFileButton2_Click(object sender, RoutedEventArgs e)
-        {
-            kinect3DOperations.getPointCloudOfDepthData();
-        }
-
         private void CreatePointCloudMeshButton_Click(object sender, RoutedEventArgs e)
         {
             //kinect3DOperations.createPointCloudMesh();
@@ -157,7 +152,7 @@
 
             //kinect3DOperations.createTrianglesOfCubePlanes();
             kinect3DOperations.labelAccessibleCubes();
-            kinect3DOperations.renderTrianglePlanes();
+            kinect3DOperations.renderProcessedPointCloudTriangles();
         }
         
         private void RenderPointCloudButton_Click(object sender, RoutedEventArgs e)
