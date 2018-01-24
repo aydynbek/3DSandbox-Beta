@@ -126,7 +126,7 @@ namespace _3DSandbox
         /// <summary>
         /// A Dictionary of all vertices created by simplification from point cloud data.
         /// </summary>
-        public Dictionary<int, Vertex> allVertices = new Dictionary<int, Vertex>();
+        public Dictionary<int, Vertex> allCubeCrossSectionVerticees = new Dictionary<int, Vertex>();
 
         /// <summary>
         /// A Dictionary of all triangles created from cube planes.
@@ -376,16 +376,16 @@ namespace _3DSandbox
 
                 cubeInformationTextBox.Text += "\n";
                 cubeInformationTextBox.Text += "**********" + "\n";
-                cubeInformationTextBox.Text += "Cube Average Normal X: " + cubeToHandle.averageNormalVector.X.ToString("n4") + "\n";
-                cubeInformationTextBox.Text += "Cube Average Normal Y: " + cubeToHandle.averageNormalVector.Y.ToString("n4") + "\n";
-                cubeInformationTextBox.Text += "Cube Average Normal Z: " + cubeToHandle.averageNormalVector.Z.ToString("n4") + "\n";
+                cubeInformationTextBox.Text += "Cube Average Normal X: " + cubeToHandle.cubeNormalVector.X.ToString("n4") + "\n";
+                cubeInformationTextBox.Text += "Cube Average Normal Y: " + cubeToHandle.cubeNormalVector.Y.ToString("n4") + "\n";
+                cubeInformationTextBox.Text += "Cube Average Normal Z: " + cubeToHandle.cubeNormalVector.Z.ToString("n4") + "\n";
 
                 cubeInformationTextBox.Text += "**********" + "\n";
                 cubeInformationTextBox.Text += "Cube Vertices: \n";
-                foreach (EdgesOfCube vertexEdge in cubeToHandle.edges.Keys)
+                foreach (EdgesOfCube vertexEdge in cubeToHandle.crossSectionVerticeesByEdge.Keys)
                 {
                     cubeInformationTextBox.Text += "Vertex Edge: " + vertexEdge.ToString() 
-                         + "; " + cubeToHandle.edges[vertexEdge].ToString() + "\n";
+                         + "; " + cubeToHandle.crossSectionVerticeesByEdge[vertexEdge].ToString() + "\n";
                 }
 
                 cubeInformationTextBox.Text += "**********" + "\n";
@@ -445,7 +445,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.AB, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -456,7 +456,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.BC, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -467,7 +467,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.CD, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -478,7 +478,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.DA, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -491,7 +491,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.EF, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -502,7 +502,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.FG, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -513,7 +513,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.GH, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -524,7 +524,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.HE, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -537,7 +537,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.AE, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -548,7 +548,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.BF, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -559,7 +559,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.CG, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -570,7 +570,7 @@ namespace _3DSandbox
                 intersectedPoint = new Point3D(x, y, z);
                 intersectedPointVertex = new Vertex(newVertexId, intersectedPoint);
 
-                allVertices.Add(newVertexId, intersectedPointVertex);
+                allCubeCrossSectionVerticees.Add(newVertexId, intersectedPointVertex);
                 edgesOfCube.Add(EdgesOfCube.DH, intersectedPointVertex);
                 verticesOfCube.Add(newVertexId++, intersectedPointVertex);
             }
@@ -580,8 +580,8 @@ namespace _3DSandbox
             cubeVertices.Add(cubeId, verticesOfCube);
             
             // Update the cube data structures:
-            cubeToHandle.vertices = verticesOfCube;
-            cubeToHandle.edges = edgesOfCube;
+            cubeToHandle.cubeCrossSectionVertices = verticesOfCube;
+            cubeToHandle.crossSectionVerticeesByEdge = edgesOfCube;
             cubeToHandle.hasPlane = true;
         }
 
@@ -1210,6 +1210,7 @@ namespace _3DSandbox
 
                 if (cubePointCloudVertices.ContainsKey(gridLimitsStrWholes))
                 {
+                    // Adding to the existing list:
                     singleCubeVertices = cubePointCloudVertices[gridLimitsStrWholes];
                     singleCubeVertices.Add(pointMerge);
 
@@ -1889,7 +1890,7 @@ namespace _3DSandbox
                     currentCubeConnectionsTypes = currentCubeToHandle.neighborsConnectionType;
 
                     // Get the occupied edges of current cube:
-                    edgesOfCurrentCube = currentCubeToHandle.edges;
+                    edgesOfCurrentCube = currentCubeToHandle.crossSectionVerticeesByEdge;
 
                     // For each edge with a present vertex:
                     foreach(EdgesOfCube currentEdge in edgesOfCurrentCube.Keys)
@@ -1951,12 +1952,12 @@ namespace _3DSandbox
 
                                     // Check to see if the potential neighbor actually has a vertex at the
                                     // complimentary edge:
-                                    if (neighborCubeToHandle.edges.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
+                                    if (neighborCubeToHandle.crossSectionVerticeesByEdge.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
                                     {
                                         neighborCubeToHandle.haveEdgesMerged[(int)neighborsWithMatchingEdges[matchedNeighbor]]
                                             = true;
                                         neighborVertexParameter += neighborCubeToHandle.
-                                            edges[neighborsWithMatchingEdges[matchedNeighbor]].vertexPosition.X;
+                                            crossSectionVerticeesByEdge[neighborsWithMatchingEdges[matchedNeighbor]].vertexPosition.X;
                                         countOfVerticesToMerge++;
                                     }
                                 }
@@ -1970,18 +1971,18 @@ namespace _3DSandbox
                                 {
                                     neighborCubeToHandle = currentCubeToHandle.neighbors[matchedNeighbor];
 
-                                    if (neighborCubeToHandle.edges.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
+                                    if (neighborCubeToHandle.crossSectionVerticeesByEdge.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
                                     {
-                                        oldVertexId = neighborCubeToHandle.edges[neighborsWithMatchingEdges
+                                        oldVertexId = neighborCubeToHandle.crossSectionVerticeesByEdge[neighborsWithMatchingEdges
                                             [matchedNeighbor]].vertexId;
 
                                         // Replace the neighbors vertex with the current one:
-                                        neighborCubeToHandle.edges[neighborsWithMatchingEdges[matchedNeighbor]]
+                                        neighborCubeToHandle.crossSectionVerticeesByEdge[neighborsWithMatchingEdges[matchedNeighbor]]
                                             = currentVertex;
 
                                         // Replace the vertex at the edge of the neighbor with the current vertex:
-                                        neighborCubeToHandle.vertices.Remove(oldVertexId);
-                                        neighborCubeToHandle.vertices.Add(currentVertex.vertexId, currentVertex);
+                                        neighborCubeToHandle.cubeCrossSectionVertices.Remove(oldVertexId);
+                                        neighborCubeToHandle.cubeCrossSectionVertices.Add(currentVertex.vertexId, currentVertex);
                                     }
                                 }
                                 
@@ -2000,12 +2001,12 @@ namespace _3DSandbox
 
                                     // Check to see if the potential neighbor actually has a vertex at the
                                     // complimentary edge:
-                                    if (neighborCubeToHandle.edges.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
+                                    if (neighborCubeToHandle.crossSectionVerticeesByEdge.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
                                     {
                                         neighborCubeToHandle.haveEdgesMerged[(int)neighborsWithMatchingEdges[matchedNeighbor]]
                                             = true;
                                         neighborVertexParameter += neighborCubeToHandle.
-                                            edges[neighborsWithMatchingEdges[matchedNeighbor]].vertexPosition.Y;
+                                            crossSectionVerticeesByEdge[neighborsWithMatchingEdges[matchedNeighbor]].vertexPosition.Y;
                                         countOfVerticesToMerge++;
                                     }
                                 }
@@ -2019,18 +2020,18 @@ namespace _3DSandbox
                                 {
                                     neighborCubeToHandle = currentCubeToHandle.neighbors[matchedNeighbor];
 
-                                    if (neighborCubeToHandle.edges.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
+                                    if (neighborCubeToHandle.crossSectionVerticeesByEdge.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
                                     {
-                                        oldVertexId = neighborCubeToHandle.edges[neighborsWithMatchingEdges
+                                        oldVertexId = neighborCubeToHandle.crossSectionVerticeesByEdge[neighborsWithMatchingEdges
                                             [matchedNeighbor]].vertexId;
 
                                         // Replace the neighbors vertex with the current one:
-                                        neighborCubeToHandle.edges[neighborsWithMatchingEdges[matchedNeighbor]]
+                                        neighborCubeToHandle.crossSectionVerticeesByEdge[neighborsWithMatchingEdges[matchedNeighbor]]
                                             = currentVertex;
 
                                         // Replace the vertex at the edge of the neighbor with the current vertex:
-                                        neighborCubeToHandle.vertices.Remove(oldVertexId);
-                                        neighborCubeToHandle.vertices.Add(currentVertex.vertexId, currentVertex);
+                                        neighborCubeToHandle.cubeCrossSectionVertices.Remove(oldVertexId);
+                                        neighborCubeToHandle.cubeCrossSectionVertices.Add(currentVertex.vertexId, currentVertex);
                                     }
                                 }
                                 
@@ -2049,12 +2050,12 @@ namespace _3DSandbox
 
                                     // Check to see if the potential neighbor actually has a vertex at the
                                     // complimentary edge:
-                                    if (neighborCubeToHandle.edges.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
+                                    if (neighborCubeToHandle.crossSectionVerticeesByEdge.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
                                     {
                                         neighborCubeToHandle.haveEdgesMerged[(int)neighborsWithMatchingEdges[matchedNeighbor]]
                                             = true;
                                         neighborVertexParameter += neighborCubeToHandle.
-                                            edges[neighborsWithMatchingEdges[matchedNeighbor]].vertexPosition.Z;
+                                            crossSectionVerticeesByEdge[neighborsWithMatchingEdges[matchedNeighbor]].vertexPosition.Z;
                                         countOfVerticesToMerge++;
                                     }
                                 }
@@ -2068,18 +2069,18 @@ namespace _3DSandbox
                                 {
                                     neighborCubeToHandle = currentCubeToHandle.neighbors[matchedNeighbor];
 
-                                    if (neighborCubeToHandle.edges.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
+                                    if (neighborCubeToHandle.crossSectionVerticeesByEdge.ContainsKey(neighborsWithMatchingEdges[matchedNeighbor]))
                                     {
-                                        oldVertexId = neighborCubeToHandle.edges[neighborsWithMatchingEdges
+                                        oldVertexId = neighborCubeToHandle.crossSectionVerticeesByEdge[neighborsWithMatchingEdges
                                             [matchedNeighbor]].vertexId;
 
                                         // Replace the neighbors vertex with the current one:
-                                        neighborCubeToHandle.edges[neighborsWithMatchingEdges[matchedNeighbor]]
+                                        neighborCubeToHandle.crossSectionVerticeesByEdge[neighborsWithMatchingEdges[matchedNeighbor]]
                                             = currentVertex;
 
                                         // Replace the vertex at the edge of the neighbor with the current vertex:
-                                        neighborCubeToHandle.vertices.Remove(oldVertexId);
-                                        neighborCubeToHandle.vertices.Add(currentVertex.vertexId, currentVertex);
+                                        neighborCubeToHandle.cubeCrossSectionVertices.Remove(oldVertexId);
+                                        neighborCubeToHandle.cubeCrossSectionVertices.Add(currentVertex.vertexId, currentVertex);
                                     }
                                 }
                                 
@@ -3293,8 +3294,8 @@ namespace _3DSandbox
             {
                 cubeToHandle = allCubes[cubeId];
                 
-                convertPolygonIntoTriangles(new Dictionary<int, Vertex>(cubeToHandle.vertices),
-                    cubeToHandle.vertices.Count, ref indexOfTriangles, cubeId);
+                convertPolygonIntoTriangles(new Dictionary<int, Vertex>(cubeToHandle.cubeCrossSectionVertices),
+                    cubeToHandle.cubeCrossSectionVertices.Count, ref indexOfTriangles, cubeId);
             }
         }
 
@@ -3316,7 +3317,7 @@ namespace _3DSandbox
                 cubeToHandle = allCubes[cubeId];
                 if (cubeToHandle.hasPlane)
                 {
-                    verticesOfCube = cubeToHandle.vertices;
+                    verticesOfCube = cubeToHandle.cubeCrossSectionVertices;
                     trianglesOfCube = cubeToHandle.triangles;
                     averageNormalVector = new Vector3D(0,0,0);
 
@@ -3331,7 +3332,7 @@ namespace _3DSandbox
                     averageNormalVector.Y = averageNormalVector.Y / trianglesOfCube.Count;
                     averageNormalVector.Z = averageNormalVector.Z / trianglesOfCube.Count;
 
-                    cubeToHandle.averageNormalVector = averageNormalVector;
+                    cubeToHandle.cubeNormalVector = averageNormalVector;
                     
                     foreach (int triangleId in trianglesOfCube.Keys)
                     {
@@ -3379,71 +3380,7 @@ namespace _3DSandbox
 
             }
         }
-
-        public void labelAccessibleCubes()
-        {
-            int indexOfTriangles = 0;
-            Cube cubeToHandle;
-            Dictionary<int, Vertex> verticesOfCube;
-            Dictionary<int, Triangle> trianglesOfCube;
-            List<double> differencesBetweenVertices;
-            Triangle triangleToHandle;
-            Vertex currentVertex, compareVertex;
-            double maximumDifferenceBetweenVertices = 0, minimumDifferenceBetweenVertices = 0;
-
-            foreach (string cubeId in allCubes.Keys)
-            {
-                cubeToHandle = allCubes[cubeId];
-                if (cubeToHandle.hasPlane)
-                {
-                    verticesOfCube = cubeToHandle.vertices;
-                    differencesBetweenVertices = new List<double>();
-
-                    foreach (int currentVertexId in verticesOfCube.Keys)
-                    {
-                        foreach (int compareVertexId in verticesOfCube.Keys)
-                        {
-                            if (currentVertexId != compareVertexId)
-                            {
-                                currentVertex = verticesOfCube[currentVertexId];
-                                compareVertex = verticesOfCube[compareVertexId];
-                                differencesBetweenVertices.Add(Math.Abs(currentVertex.vertexPosition.Y -
-                                    compareVertex.vertexPosition.Y));
-                            }
-                        }
-                    }
-
-                    // Find maximum and minimum of differences:
-                    maximumDifferenceBetweenVertices = differencesBetweenVertices.Max();
-                    //minimumDifferenceBetweenVertices = differencesBetweenVertices.Min();
-
-                    trianglesOfCube = cubeToHandle.triangles;
-
-                    if (maximumDifferenceBetweenVertices < maximumAllowableVertexHeightDifference)
-                    {
-                        // Label all triangles as accessible:
-                        foreach (int triangleId in trianglesOfCube.Keys)
-                        {
-                            triangleToHandle = trianglesOfCube[triangleId];
-                            triangleToHandle.accessabilityType = TriangleAccesabilityType.CANDIDATE;
-                            triangleToHandle.useType = TriangleUseType.CUBE_PLANE_ACTUAL;
-                        }
-                    }
-                    else
-                    {
-                        // Label all triangles as unaccessible:
-                        foreach (int triangleId in trianglesOfCube.Keys)
-                        {
-                            triangleToHandle = trianglesOfCube[triangleId];
-                            triangleToHandle.accessabilityType = TriangleAccesabilityType.UNACCESSABLE;
-                            triangleToHandle.useType = TriangleUseType.CUBE_PLANE_ACTUAL;
-                        }
-                    }
-                }
-                
-            }
-        }
-
+        
         public void runConvertPolygonIntoTrianglesTest()
         {
             List<Point3D> pointCloudVerticesOfCube = new List<Point3D>();
@@ -3861,23 +3798,23 @@ namespace _3DSandbox
                 
                 if(orderedList.Length == 5)
                 {
-                    currentVertex = cubeToHandle.vertices[orderedList[0]];
-                    closestVertex = cubeToHandle.vertices[orderedList[1]];
-                    secondClosestVertex = cubeToHandle.vertices[orderedList[2]];
+                    currentVertex = cubeToHandle.cubeCrossSectionVertices[orderedList[0]];
+                    closestVertex = cubeToHandle.cubeCrossSectionVertices[orderedList[1]];
+                    secondClosestVertex = cubeToHandle.cubeCrossSectionVertices[orderedList[2]];
                     triangleToHandle = new Triangle(triangleIndex, currentVertex,
                             closestVertex, secondClosestVertex);
                     triangleToHandle.normalVector = MathAncillary.getNormalVectorOfTriangle(
                     currentVertex, closestVertex, secondClosestVertex);
                     cubeTriangles.Add(triangleIndex++, triangleToHandle);
 
-                    closestVertex = cubeToHandle.vertices[orderedList[3]];
+                    closestVertex = cubeToHandle.cubeCrossSectionVertices[orderedList[3]];
                     triangleToHandle = new Triangle(triangleIndex, currentVertex,
                             closestVertex, secondClosestVertex);
                     triangleToHandle.normalVector = MathAncillary.getNormalVectorOfTriangle(
                             currentVertex, closestVertex, secondClosestVertex);
                     cubeTriangles.Add(triangleIndex++, triangleToHandle);
 
-                    secondClosestVertex = cubeToHandle.vertices[orderedList[4]];
+                    secondClosestVertex = cubeToHandle.cubeCrossSectionVertices[orderedList[4]];
                     triangleToHandle = new Triangle(triangleIndex, currentVertex,
                             closestVertex, secondClosestVertex);
                     triangleToHandle.normalVector = MathAncillary.getNormalVectorOfTriangle(

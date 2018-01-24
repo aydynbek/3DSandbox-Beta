@@ -94,20 +94,44 @@ namespace _3DSandbox
         public Vector3D planeEquationNormalVector;
         public Point3D[] planeTrianglePoints;
 
+        
         public bool hasPlane = false;
+
         public bool[] haveEdgesMerged = new bool[12]{ false, false, false, false, false, false,
             false, false, false, false, false, false};
 
-        public Vector3D averageNormalVector;
+        /// <summary>
+        /// The normal vector of the whole cube which is determined by merging all triangle normals.
+        /// </summary>
+        public Vector3D cubeNormalVector;
 
         CubeUseType useType;
         CubeAccesabilityType accessabilityType;
+        
+        /// <summary>
+        /// List of all verticees that happen to be at the cross section of the cube and its plane.
+        /// </summary>
+        public Dictionary<int, Vertex> cubeCrossSectionVertices;
 
-        public Dictionary<int, Vertex> vertices;
-        public Dictionary<EdgesOfCube, Vertex> edges;
-        public Dictionary<int, Triangle> triangles;
+        /// <summary>
+        /// List of all cross section verticees by edge type.
+        /// </summary>
+        public Dictionary<EdgesOfCube, Vertex> crossSectionVerticeesByEdge;
+
+        /// <summary>
+        /// The neighbors of the cube.
+        /// </summary>
         public Dictionary<string, Cube> neighbors;
+
+        /// <summary>
+        /// List of all neighbors of the cube by connection type.
+        /// </summary>
         public Dictionary<ConnectOfCube, string> neighborsConnectionType;
+
+        /// <summary>
+        /// These are the triangles created from point cloud.
+        /// </summary>
+        public Dictionary<int, Triangle> triangles;
 
         /// <summary>
         /// List of normal vectors for all triangles occupying the cube.
@@ -131,7 +155,7 @@ namespace _3DSandbox
             this.zFloor = zFloor;
             this.zCeiling = zCeiling;
 
-            vertices = new Dictionary<int, Vertex>();
+            cubeCrossSectionVertices = new Dictionary<int, Vertex>();
             triangles = new Dictionary<int, Triangle>();
             neighbors = new Dictionary<string, Cube>();
             neighborsConnectionType = new Dictionary<ConnectOfCube, string>();
