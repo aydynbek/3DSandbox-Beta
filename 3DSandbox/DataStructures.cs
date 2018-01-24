@@ -105,8 +105,8 @@ namespace _3DSandbox
         /// </summary>
         public Vector3D cubeNormalVector;
 
-        CubeUseType useType;
-        CubeAccesabilityType accessabilityType;
+        public CubeUseType useType;
+        public CubeAccesabilityType accessabilityType;
         
         /// <summary>
         /// List of all verticees that happen to be at the cross section of the cube and its plane.

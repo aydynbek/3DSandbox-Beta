@@ -145,7 +145,7 @@
             //kinect3DOperations.connectAdjacentPlanes2();
 
             kinect3DOperations.createTrianglesOfCubePlanes();
-            kinect3DOperations.labelAccessibleCubes2();
+            kinect3DOperations.labelAccessibleCubes();
             kinect3DOperations.renderTrianglePlanes();
         }
         
