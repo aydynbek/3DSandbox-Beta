@@ -97,6 +97,8 @@ namespace _3DSandbox
         public TextBox informationTextBlock;
         public TextBox cubeInformationTextBox;
 
+        public int downgradeFactor = 16;
+
         public const int RealsenseWidth = 848;
         public const int RealsenseHeight = 480;
 
@@ -358,6 +360,10 @@ namespace _3DSandbox
                 cubeInformationTextBox.Text += "Cube Plane Normal X: " + cubeToHandle.planeEquationNormalVector.X.ToString("n4") + "\n";
                 cubeInformationTextBox.Text += "Cube Plane Normal Y: " + cubeToHandle.planeEquationNormalVector.Y.ToString("n4") + "\n";
                 cubeInformationTextBox.Text += "Cube Plane Normal Z: " + cubeToHandle.planeEquationNormalVector.Z.ToString("n4") + "\n";
+
+                cubeInformationTextBox.Text += "**********" + "\n";
+                cubeInformationTextBox.Text += "Cube Accessability Type: " + cubeToHandle.accessabilityType.ToString() + "\n";
+                cubeInformationTextBox.Text += "Cube Use Type: " + cubeToHandle.useType.ToString() + "\n";
 
                 cubeInformationTextBox.Text += "**********" + "\n";
                 cubeInformationTextBox.Text += "Cube Neighbors: \n";
@@ -1345,6 +1351,7 @@ namespace _3DSandbox
                 }
             }
         }
+        
 
         /// <summary>
         /// This function renders the point cloud as a connected 3D mesh. The triangulation process
@@ -1364,13 +1371,15 @@ namespace _3DSandbox
             double distanceDown = 0, distanceRight = 0, distanceDiagonal = 0;
             double x, y, z;
             Vector3D normalVectorOfTriangle;
-            int h = 0;
+
+            int height = RealsenseHeight / downgradeFactor;
+            int width = RealsenseWidth / downgradeFactor;
 
             createPointCloudActualMeshRealsense();
             
             foreach (int rowIndex in indexedPoints.Keys)
             {
-                if (rowIndexCount < (RealsenseHeight - 1))
+                if (rowIndexCount < (height - 1))
                 {
                     nextRowIndex = rowIndex + 1;
                     currentColumnPoints = indexedPoints[rowIndex];
@@ -1378,7 +1387,7 @@ namespace _3DSandbox
 
                     foreach (int columnIndex in currentColumnPoints.Keys)
                     {
-                        if (columnIndex < (RealsenseWidth - 1))
+                        if (columnIndex < (width - 1))
                         {
                             basePoint = pointCloudIndexed[(indexedPoints[rowIndex])[columnIndex]];
                             if(basePoint.Z < (-25*(0.2)))
@@ -1440,7 +1449,6 @@ namespace _3DSandbox
                                     triangleIndex++;
                                 }
                             }
-                            
                         }
                     }
                 }
@@ -3215,19 +3223,25 @@ namespace _3DSandbox
         {
             Dictionary<int, int> columnList;
             int newPointIndex = 0;
-            
-            for (int i = 0; i < RealsenseHeight; i++)    
+
+            int height = RealsenseHeight / downgradeFactor;
+            int width = RealsenseWidth / downgradeFactor;
+
+            int rowIndex = 0;
+            int colIndex = 0;
+
+            for (int i = 0; i < RealsenseHeight; i += downgradeFactor)    
             {
                 columnList = new Dictionary<int, int>();
-                for (int j = 0; j < RealsenseWidth; j++)     
+                colIndex = 0;
+                for (int j = 0; j < RealsenseWidth; j += downgradeFactor)     
                 {
                     pointCloudIndexed.Add(newPointIndex, pointCloudVertices[(i * RealsenseWidth) + j]);
-                    columnList.Add(j, newPointIndex++);
+                    columnList.Add(colIndex++, newPointIndex++);
                 }
-                indexedPoints.Add(i, columnList);
+                indexedPoints.Add(rowIndex++, columnList);
             }
-            
         }
-        
+
     }
 }

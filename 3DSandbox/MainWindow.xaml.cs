@@ -200,10 +200,6 @@
         {
             dataDirectoryPath = dataDirectoryPathTextBox.Text;
             informationTextBlock.Text = "";
-            //kinect3DOperations.extractSavedPointCloud();
-            kinect3DOperations.runPlaneTest();
-            //kinect3DOperations.runConvertPolygonIntoTrianglesTest();
-            //kinect3DOperations.savePointCloudInFile();
         }
 
         
